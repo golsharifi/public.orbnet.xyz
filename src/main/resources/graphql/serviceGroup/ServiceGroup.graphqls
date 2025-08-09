@@ -1,0 +1,33 @@
+input ServiceGroupEdit {
+  name: String
+  description: String
+  language: String
+  discount: String
+  discount3: String
+  discount6: String
+  discount12: String
+  discount24: String
+  discount36: String
+  discountLifetime: String
+  gateways: [Int]
+  allowedGeolocations: [Int]
+  disAllowedGeolocations: [Int]
+}
+
+type ServiceGroupView {
+  id: Int
+  name: String
+  description: String
+  language: String
+  discount: String
+  discount3: String
+  discount6: String
+  discount12: String
+  discount24: String
+  discount36: String
+  discountLifetime: String
+  gateways: [GatewayView]
+  allowedGeolocations: [GeolocationView]
+  disAllowedGeolocations: [GeolocationView]
+  groups: [GroupView]
+}

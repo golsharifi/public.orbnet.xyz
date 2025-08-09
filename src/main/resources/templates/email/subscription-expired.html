@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}"
+      th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title th:text="#{email.subscription.expired.title}">OrbVPN: Subscription Expired</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: #f5f5f5 !important;
+            color: #333333 !important;
+            line-height: 1.6 !important;
+            width: 100% !important;
+        }
+
+        /* Default LTR font */
+        body,
+        .email-container,
+        .content-section,
+        .expired-card,
+        .expired-message,
+        .renewal-options {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        }
+
+        /* RTL font overrides */
+        [dir="rtl"] body,
+        [dir="rtl"] .email-container,
+        [dir="rtl"] .content-section,
+        [dir="rtl"] .expired-card,
+        [dir="rtl"] .expired-message,
+        [dir="rtl"] .renewal-options {
+            text-align: right !important;
+            direction: rtl !important;
+            font-family: Tahoma, Arial, sans-serif !important;
+        }
+
+        /* Force visibility and display */
+        .email-container,
+        .content-section,
+        .expired-card,
+        .expired-message,
+        .renewal-options,
+        .footer-content {
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            padding: 32px 24px !important;
+            background-color: #ffffff !important;
+        }
+
+        /* Content Section */
+        .content-section {
+            margin-bottom: 32px !important;
+        }
+
+        /* Expired Card */
+        .expired-card {
+            background-color: #ffebee !important;
+            border-radius: 8px !important;
+            padding: 24px !important;
+            margin: 24px 0 !important;
+        }
+
+        [dir="rtl"] .expired-card {
+            border-right: 4px solid #f44336 !important;
+            border-left: none !important;
+        }
+
+        [dir="ltr"] .expired-card {
+            border-left: 4px solid #f44336 !important;
+            border-right: none !important;
+        }
+
+        /* Expired Message */
+        .expired-message {
+            color: #c62828 !important;
+            font-size: 18px !important;
+            font-weight: 500 !important;
+            margin-bottom: 24px !important;
+            display: block !important;
+            line-height: 1.6 !important;
+        }
+
+        /* Renewal Options */
+        .renewal-options {
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 8px !important;
+            padding: 20px !important;
+            margin-top: 24px !important;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block !important;
+            background-color: #f44336 !important;
+            color: #ffffff !important;
+            padding: 12px 32px !important;
+            border-radius: 6px !important;
+            text-decoration: none !important;
+            font-weight: 500 !important;
+            margin-top: 16px !important;
+        }
+
+        .cta-button:hover {
+            background-color: #d32f2f !important;
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a !important;
+                color: #ffffff !important;
+            }
+
+            .email-container {
+                background-color: #262626 !important;
+            }
+
+            .expired-card {
+                background-color: rgba(244, 67, 54, 0.1) !important;
+            }
+
+            .renewal-options {
+                background-color: #333333 !important;
+                border-color: #404040 !important;
+            }
+
+            .expired-message {
+                color: #ef9a9a !important;
+            }
+
+            .installation-guides {
+                background-color: #333333 !important;
+            }
+
+            .guide-item {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+            }
+
+            .guide-description {
+                color: #999999 !important;
+            }
+
+            .support-section {
+                background-color: #333333 !important;
+            }
+
+            .support-link {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+                color: #ffffff !important;
+            }
+
+            .company-info,
+            .copyright {
+                color: #999999 !important;
+            }
+
+            .disclaimer {
+                color: #808080 !important;
+            }
+
+            .footer-container,
+            .company-info,
+            .disclaimer {
+                border-color: #404040 !important;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .email-container {
+                padding: 24px 16px !important;
+            }
+
+            .expired-card {
+                padding: 20px !important;
+            }
+
+            .expired-message {
+                font-size: 16px !important;
+            }
+
+            .guides-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .support-links {
+                flex-direction: column !important;
+            }
+
+            .support-link {
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr>
+        <td align="center">
+            <div class="email-container"
+                 th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}">
+
+                <!-- Header -->
+                <div th:replace="~{fragments/header :: header(${userName})}"></div>
+
+                <!-- Main Content -->
+                <div class="content-section">
+                    <!-- Expired Card -->
+                    <div class="expired-card">
+                        <div class="expired-message" th:text="#{email.subscription.expired.message(${daysAgo})}">
+                            Your subscription expired X days ago.
+                        </div>
+                    </div>
+
+                    <!-- Renewal Options -->
+                    <div class="renewal-options">
+                        <div th:replace="~{fragments/renewal-options :: options}"></div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="footer-content">
+                    <div th:replace="~{fragments/footer :: footer}"></div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}"
+      th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title th:text="#{email.invoice.title}">Invoice for your Payment</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: #f5f5f5 !important;
+            color: #333333 !important;
+            line-height: 1.6 !important;
+            width: 100% !important;
+        }
+
+        /* Default LTR font */
+        body,
+        .email-container,
+        .content-section,
+        .invoice-card,
+        .greeting,
+        .thank-you,
+        .invoice-details {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        }
+
+        /* RTL font overrides */
+        [dir="rtl"] body,
+        [dir="rtl"] .email-container,
+        [dir="rtl"] .content-section,
+        [dir="rtl"] .invoice-card,
+        [dir="rtl"] .greeting,
+        [dir="rtl"] .thank-you,
+        [dir="rtl"] .invoice-details {
+            text-align: right !important;
+            direction: rtl !important;
+            font-family: Tahoma, Arial, sans-serif !important;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            padding: 32px 24px !important;
+            background-color: #ffffff !important;
+        }
+
+        /* Invoice Card */
+        .invoice-card {
+            background-color: #f8f9fa !important;
+            border-radius: 8px !important;
+            padding: 24px !important;
+            margin: 24px 0 !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        }
+
+        [dir="rtl"] .invoice-card {
+            border-right: 4px solid #00796b !important;
+            border-left: none !important;
+        }
+
+        [dir="ltr"] .invoice-card {
+            border-left: 4px solid #00796b !important;
+            border-right: none !important;
+        }
+
+        /* Greeting */
+        .greeting {
+            font-size: 20px !important;
+            font-weight: 500 !important;
+            color: #00796b !important;
+            margin-bottom: 16px !important;
+        }
+
+        /* Thank You Message */
+        .thank-you {
+            font-size: 16px !important;
+            color: #333333 !important;
+            margin: 16px 0 !important;
+            line-height: 1.6 !important;
+        }
+
+        /* Invoice Details */
+        .invoice-details {
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 6px !important;
+            padding: 16px !important;
+            margin-top: 16px !important;
+            color: #666666 !important;
+        }
+
+        /* Attachment Icon */
+        .attachment-info {
+            display: flex !important;
+            align-items: center !important;
+            margin-top: 16px !important;
+            padding: 12px !important;
+            background-color: #e0f2f1 !important;
+            border-radius: 4px !important;
+        }
+
+        .attachment-icon {
+            margin-right: 8px !important;
+            color: #00796b !important;
+        }
+
+        [dir="rtl"] .attachment-icon {
+            margin-right: 0 !important;
+            margin-left: 8px !important;
+        }
+
+        /* Installation Guides Section */
+        .installation-guides {
+            margin-top: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .guides-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .guides-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+        }
+
+        .guide-item {
+            padding: 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 6px !important;
+            text-decoration: none !important;
+            color: #333333 !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .guide-item:hover {
+            border-color: #0052FF !important;
+        }
+
+        .guide-title {
+            font-weight: 500 !important;
+            margin-bottom: 4px !important;
+            color: #0052FF !important;
+        }
+
+        .guide-description {
+            font-size: 13px !important;
+            color: #666666 !important;
+        }
+
+        /* Footer Styles */
+        .footer-container {
+            width: 100% !important;
+            margin-top: 48px !important;
+            padding-top: 32px !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+        .support-section {
+            margin-bottom: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .support-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .support-links {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 12px !important;
+        }
+
+        .support-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 8px 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 4px !important;
+            text-decoration: none !important;
+            color: #0052FF !important;
+        }
+
+        .company-info {
+            padding: 24px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+            color: #666666 !important;
+            font-size: 13px !important;
+        }
+
+        .company-name {
+            font-weight: 500 !important;
+            margin-bottom: 8px !important;
+        }
+
+        .company-details div {
+            margin-bottom: 4px !important;
+        }
+
+        .copyright {
+            color: #666666 !important;
+            font-size: 12px !important;
+            margin: 16px 0 !important;
+        }
+
+        .disclaimer {
+            font-size: 11px !important;
+            color: #999999 !important;
+            line-height: 1.4 !important;
+            padding: 16px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a !important;
+                color: #ffffff !important;
+                width: 100% !important;
+            }
+
+            .email-container {
+                background-color: #262626 !important;
+            }
+
+            .invoice-card {
+                background-color: #333333 !important;
+            }
+
+            .thank-you {
+                color: #ffffff !important;
+            }
+
+            .invoice-details {
+                background-color: #1a1a1a !important;
+                border-color: #404040 !important;
+                color: #999999 !important;
+            }
+
+            .attachment-info {
+                background-color: rgba(0, 121, 107, 0.1) !important;
+            }
+
+            .installation-guides {
+                background-color: #333333 !important;
+            }
+
+            .guide-item {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+            }
+
+            .guide-description {
+                color: #999999 !important;
+            }
+
+            .support-section {
+                background-color: #333333 !important;
+            }
+
+            .support-link {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+                color: #ffffff !important;
+            }
+
+            .company-info,
+            .copyright {
+                color: #999999 !important;
+            }
+
+            .disclaimer {
+                color: #808080 !important;
+            }
+
+            .footer-container,
+            .company-info,
+            .disclaimer {
+                border-color: #404040 !important;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .email-container {
+                padding: 24px 16px !important;
+            }
+
+            .invoice-card {
+                padding: 20px !important;
+            }
+
+            .greeting {
+                font-size: 18px !important;
+            }
+
+            .guides-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .support-links {
+                flex-direction: column !important;
+            }
+
+            .support-link {
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr>
+        <td align="center">
+            <div class="email-container"
+                 th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}">
+
+                <!-- Header -->
+                <div th:replace="~{fragments/header :: header}"></div>
+
+                <!-- Main Content -->
+                <div class="content-section">
+                    <!-- Invoice Card -->
+                    <div class="invoice-card">
+                        <!-- Greeting -->
+                        <div class="greeting" th:text="#{email.invoice.greeting}">
+                            Hello!
+                        </div>
+
+                        <!-- Thank You Message -->
+                        <div class="thank-you" th:text="#{email.invoice.thank.you}">
+                            Thank you for choosing us.
+                        </div>
+
+                        <!-- Invoice Details -->
+                        <div class="invoice-details">
+                            <div th:text="#{email.invoice.details}">
+                                You can see the invoice details of your payment in the attached document!
+                            </div>
+
+                            <!-- Attachment Info -->
+                            <div class="attachment-info">
+                                <span class="attachment-icon">📎</span>
+                                <span>invoice.pdf</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="footer-content">
+                    <div th:replace="~{fragments/footer :: footer}"></div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

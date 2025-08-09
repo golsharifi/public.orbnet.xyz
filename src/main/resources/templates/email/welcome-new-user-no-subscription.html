@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}"
+      th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title th:text="#{email.welcome.title}">OrbVPN: Welcome!</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: #f5f5f5 !important;
+            color: #333333 !important;
+            line-height: 1.6 !important;
+            width: 100% !important;
+        }
+
+        /* Default LTR font */
+        body,
+        .email-container,
+        .welcome-section,
+        .login-details,
+        .features-section,
+        .cta-section,
+        .support-section {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        }
+
+        /* RTL font overrides */
+        [dir="rtl"] body,
+        [dir="rtl"] .email-container,
+        [dir="rtl"] .welcome-section,
+        [dir="rtl"] .login-details,
+        [dir="rtl"] .features-section,
+        [dir="rtl"] .cta-section,
+        [dir="rtl"] .support-section {
+            text-align: right !important;
+            direction: rtl !important;
+            font-family: Tahoma, Arial, sans-serif !important;
+        }
+
+        /* Force visibility and display */
+        .email-container,
+        .welcome-section,
+        .login-details,
+        .features-section,
+        .cta-section,
+        .support-section,
+        .footer-content {
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            padding: 32px 24px !important;
+            background-color: #ffffff !important;
+        }
+
+        /* Welcome Section */
+        .welcome-section {
+            text-align: center !important;
+            margin-bottom: 40px !important;
+            padding: 32px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 12px !important;
+        }
+
+        .welcome-heading {
+            color: #0052FF !important;
+            font-size: 28px !important;
+            font-weight: 700 !important;
+            margin-bottom: 16px !important;
+            display: block !important;
+        }
+
+        .welcome-message {
+            color: #666666 !important;
+            font-size: 16px !important;
+            margin-bottom: 24px !important;
+            line-height: 1.6 !important;
+            display: block !important;
+        }
+
+        /* Login Details */
+        .login-details {
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 12px !important;
+            padding: 24px !important;
+            margin-bottom: 32px !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .details-heading {
+            color: #0052FF !important;
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            margin-bottom: 20px !important;
+            display: block !important;
+        }
+
+        /* Credentials Table */
+        .credentials-table {
+            width: 100% !important;
+            border-collapse: separate !important;
+            border-spacing: 0 16px !important;
+        }
+
+        .credential-row {
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .credential-label {
+            padding: 16px !important;
+            font-weight: 500 !important;
+            color: #666666 !important;
+            width: 120px !important;
+        }
+
+        .credential-value {
+            padding: 16px !important;
+            color: #333333 !important;
+            font-weight: 500 !important;
+            font-family: monospace !important;
+            font-size: 15px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 4px !important;
+        }
+
+        /* Features Section */
+        .features-table {
+            width: 100% !important;
+            border-collapse: separate !important;
+            border-spacing: 16px !important;
+        }
+
+        .feature-cell {
+            padding: 20px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+            border: 1px solid #e0e0e0 !important;
+            vertical-align: top !important;
+        }
+
+        .feature-icon {
+            color: #0052FF !important;
+            margin-bottom: 12px !important;
+            display: block !important;
+            font-size: 24px !important;
+        }
+
+        .feature-title {
+            font-weight: 600 !important;
+            margin-bottom: 8px !important;
+            color: #333333 !important;
+            display: block !important;
+        }
+
+        .feature-description {
+            color: #666666 !important;
+            font-size: 14px !important;
+            display: block !important;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center !important;
+            margin: 32px 0 !important;
+            padding: 24px !important;
+            background-color: #EDF6FF !important;
+            border-radius: 12px !important;
+        }
+
+        .cta-heading {
+            color: #0052FF !important;
+            font-size: 20px !important;
+            font-weight: 600 !important;
+            margin-bottom: 16px !important;
+            display: block !important;
+        }
+
+        .cta-button {
+            display: inline-block !important;
+            background-color: #0052FF !important;
+            color: #ffffff !important;
+            padding: 12px 32px !important;
+            border-radius: 6px !important;
+            text-decoration: none !important;
+            font-weight: 500 !important;
+            margin-top: 16px !important;
+        }
+
+        /* Support Section */
+        .support-section {
+            margin-top: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+            text-align: center !important;
+        }
+
+        /* Installation Guides Section */
+        .installation-guides {
+            margin-top: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .guides-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .guides-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+        }
+
+        .guide-item {
+            padding: 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 6px !important;
+            text-decoration: none !important;
+            color: #333333 !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .guide-item:hover {
+            border-color: #0052FF !important;
+        }
+
+        .guide-title {
+            font-weight: 500 !important;
+            margin-bottom: 4px !important;
+            color: #0052FF !important;
+        }
+
+        .guide-description {
+            font-size: 13px !important;
+            color: #666666 !important;
+        }
+
+        /* Footer Styles */
+        .footer-container {
+            width: 100% !important;
+            margin-top: 48px !important;
+            padding-top: 32px !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+        .support-section {
+            margin-bottom: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .support-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .support-links {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 12px !important;
+        }
+
+        .support-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 8px 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 4px !important;
+            text-decoration: none !important;
+            color: #0052FF !important;
+        }
+
+        .company-info {
+            padding: 24px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+            color: #666666 !important;
+            font-size: 13px !important;
+        }
+
+        .company-name {
+            font-weight: 500 !important;
+            margin-bottom: 8px !important;
+        }
+
+        .company-details div {
+            margin-bottom: 4px !important;
+        }
+
+        .copyright {
+            color: #666666 !important;
+            font-size: 12px !important;
+            margin: 16px 0 !important;
+        }
+
+        .disclaimer {
+            font-size: 11px !important;
+            color: #999999 !important;
+            line-height: 1.4 !important;
+            padding: 16px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a !important;
+                color: #ffffff !important;
+            }
+
+            .email-container {
+                background-color: #262626 !important;
+            }
+
+            .welcome-section,
+            .feature-cell,
+            .support-section {
+                background-color: #333333 !important;
+            }
+
+            .login-details {
+                background-color: #333333 !important;
+                border-color: #404040 !important;
+            }
+
+            .credential-value {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+                color: #ffffff !important;
+            }
+
+            .feature-title {
+                color: #ffffff !important;
+            }
+
+            .cta-section {
+                background-color: rgba(0, 82, 255, 0.1) !important;
+            }
+
+            .installation-guides {
+                background-color: #333333 !important;
+            }
+
+            .guide-item {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+            }
+
+            .guide-description {
+                color: #999999 !important;
+            }
+
+            .support-section {
+                background-color: #333333 !important;
+            }
+
+            .support-link {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+                color: #ffffff !important;
+            }
+
+            .company-info,
+            .copyright {
+                color: #999999 !important;
+            }
+
+            .disclaimer {
+                color: #808080 !important;
+            }
+
+            .footer-container,
+            .company-info,
+            .disclaimer {
+                border-color: #404040 !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            /* Existing responsive styles... */
+            .guides-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .support-links {
+                flex-direction: column !important;
+            }
+
+            .support-link {
+                width: 100% !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr>
+        <td align="center">
+            <div class="email-container"
+                 th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}">
+
+                <!-- Header -->
+                <div th:replace="~{fragments/header :: header(${userName})}"></div>
+
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h1 class="welcome-heading" th:text="#{email.welcome.excited}">
+                        Welcome to OrbVPN!
+                    </h1>
+                    <p class="welcome-message" th:text="#{email.welcome.created}">
+                        Your account has been successfully created, and you can now enjoy secure, private internet
+                        access with OrbVPN.
+                    </p>
+                </div>
+
+                <!-- Login Details -->
+                <div class="login-details">
+                    <h2 class="details-heading" th:text="#{email.login.details}">
+                        Your Login Credentials
+                    </h2>
+                    <table class="credentials-table" cellspacing="0" cellpadding="0" border="0">
+                        <tr class="credential-row">
+                            <td class="credential-label" th:text="#{email.login.username}">Username:</td>
+                            <td class="credential-value" th:text="${username.replace('.', '.&#65279;')}">username</td>
+                        </tr>
+                        <tr class="credential-row">
+                            <td class="credential-label" th:text="#{email.login.password}">Password:</td>
+                            <td class="credential-value" th:text="${password}">password</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Features Section -->
+                <div class="features-section">
+                    <h2 class="details-heading" th:text="#{email.features.heading}">Why Choose OrbVPN?</h2>
+                    <table class="features-table" cellspacing="0" cellpadding="0" border="0">
+                        <tr>
+                            <td class="feature-cell">
+                                <div class="feature-icon">🔒</div>
+                                <div class="feature-title" th:text="#{email.feature.security}">Enhanced Security</div>
+                                <div class="feature-description" th:text="#{email.feature.security.desc}">
+                                    Military-grade encryption for your online activities
+                                </div>
+                            </td>
+                            <td class="feature-cell">
+                                <div class="feature-icon">🌐</div>
+                                <div class="feature-title" th:text="#{email.feature.access}">Global Access</div>
+                                <div class="feature-description" th:text="#{email.feature.access.desc}">
+                                    Access content from anywhere in the world
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="feature-cell">
+                                <div class="feature-icon">⚡</div>
+                                <div class="feature-title" th:text="#{email.feature.speed}">Lightning Speed</div>
+                                <div class="feature-description" th:text="#{email.feature.speed.desc}">
+                                    High-speed servers optimized for streaming
+                                </div>
+                            </td>
+                            <td class="feature-cell" style="visibility: hidden;">
+                                <!-- Empty cell for layout balance -->
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- CTA Section -->
+                <div class="cta-section">
+                    <h2 class="cta-heading" th:text="#{email.cta.heading}">Ready to Get Started?</h2>
+                    <p th:text="#{email.cta.description}">
+                        Upgrade to a premium plan to unlock all features and maximize your online security.
+                    </p>
+                    <a href="https://orbvpn.xyz/pricing" class="cta-button" th:text="#{email.cta.button}">
+                        View Premium Plans
+                    </a>
+                </div>
+
+                <!-- Support Section -->
+                <div class="support-section">
+                    <p th:text="#{email.welcome.explore}">
+                        Feel free to explore our features, and reach out to our support team if you need any assistance.
+                        We're here to help you 24/7.
+                    </p>
+                    <p th:text="#{email.welcome.stay}">Stay safe, stay connected!</p>
+                </div>
+
+                <!-- Installation Guides -->
+                <div th:replace="~{fragments/installation-guides :: guides}"></div>
+
+                <!-- Footer -->
+                <div class="footer-content">
+                    <div th:replace="~{fragments/footer :: footer}"></div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

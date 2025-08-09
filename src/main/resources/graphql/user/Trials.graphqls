@@ -1,0 +1,6 @@
+type TrialEligibilityResponse {
+  eligible: Boolean!
+  reason: String
+  lastTrialDate: LocalDateTime
+  platform: String
+}
