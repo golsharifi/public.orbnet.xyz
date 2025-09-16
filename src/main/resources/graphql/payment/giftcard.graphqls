@@ -1,0 +1,21 @@
+type GiftCard {
+  id: ID!
+  code: String!
+  groupId: Int!
+  groupName: String!
+  amount: Float!
+  used: Boolean!
+  cancelled: Boolean!
+  expirationDate: LocalDateTime!
+  redeemedAt: LocalDateTime
+  redeemedByEmail: String
+  cancelledAt: LocalDateTime
+  cancelledByEmail: String
+  createdAt: LocalDateTime!
+  updatedAt: LocalDateTime!
+}
+
+input GiftCardCreateInput {
+  groupId: Int!
+  validityDays: Int!
+}

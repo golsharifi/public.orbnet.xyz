@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Update the styles section in footer.html -->
+    <style>
+        /* Footer Container */
+        .footer-container {
+            width: 100% !important;
+            margin-top: 48px !important;
+            padding-top: 32px !important;
+            border-top: 1px solid #e0e0e0 !important;
+            display: block !important;
+        }
+
+        /* Support Section */
+        .support-section {
+            margin-bottom: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+            display: block !important;
+        }
+
+        .support-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            margin-bottom: 16px !important;
+            display: block !important;
+        }
+
+        /* Company Information */
+        .company-info {
+            padding: 24px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+            color: #666666 !important;
+            font-size: 13px !important;
+            line-height: 1.6 !important;
+            display: block !important;
+        }
+
+        .company-name {
+            font-weight: 500 !important;
+            margin-bottom: 8px !important;
+            display: block !important;
+        }
+
+        .company-details {
+            display: block !important;
+        }
+
+        .company-details div {
+            margin-bottom: 4px !important;
+            display: block !important;
+        }
+
+        /* Copyright Section */
+        .copyright {
+            color: #666666 !important;
+            font-size: 12px !important;
+            margin: 16px 0 !important;
+            display: block !important;
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            font-size: 11px !important;
+            color: #999999 !important;
+            line-height: 1.4 !important;
+            padding: 16px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+            display: block !important;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] .footer-container,
+        [dir="rtl"] .support-section,
+        [dir="rtl"] .company-info,
+        [dir="rtl"] .company-details,
+        [dir="rtl"] .copyright,
+        [dir="rtl"] .disclaimer {
+            text-align: right !important;
+            direction: rtl !important;
+            font-family: Tahoma, Arial, sans-serif !important;
+        }
+    </style>
+
+</head>
+<body>
+<div th:fragment="footer">
+    <div class="footer-container"
+         th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}">
+
+        <!-- Support Section -->
+        <div class="support-section">
+            <div class="support-heading" th:text="#{email.support.available}">
+                24/7 support is available through the following channels:
+            </div>
+            <div class="support-links" th:replace="fragments/contact-options :: options"></div>
+        </div>
+
+        <!-- Company Information -->
+        <div class="company-info">
+            <div class="company-name">ORB GLOBAL LTD</div>
+            <div class="company-details">
+                <div class="company-number">Company Number: 08274220</div>
+                <div class="company-address">7 Bell Yard, London, England, WC2A 2JR</div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="copyright">
+            © 2024 OrbVPN. All rights reserved.
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="disclaimer" th:text="#{email.disclaimer}">
+            This message is intended only for the individual(s) named and may contain confidential information...
+        </div>
+    </div>
+</div>
+</body>
+</html>
