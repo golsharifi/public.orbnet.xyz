@@ -1,0 +1,8 @@
+type QrLoginResponse {
+  qrCodeImage: String!
+  sessionId: String!
+  qrCodeValue: String!
+  deepLinkUrl: String!
+  expiresAt: LocalDateTime!
+  status: String!
+}

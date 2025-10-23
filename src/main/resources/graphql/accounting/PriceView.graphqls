@@ -1,0 +1,6 @@
+type PriceView {
+  discountedPrice: Float!
+  savingRate: Float!
+  discountRate: Float!
+  durationMonths: Float!
+}

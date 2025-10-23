@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}"
+      th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title th:text="#{email.extra.logins.confirmation.title}">OrbVPN: Extra Logins Purchase Confirmation</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333333;
+            line-height: 1.6;
+            width: 100% !important;
+        }
+
+        /* Default LTR font */
+        body,
+        .email-container,
+        .content-section,
+        .confirmation-card,
+        .details-section,
+        .usage-info {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        }
+
+        /* RTL font overrides */
+        [dir="rtl"] body,
+        [dir="rtl"] .email-container,
+        [dir="rtl"] .content-section,
+        [dir="rtl"] .confirmation-card,
+        [dir="rtl"] .details-section,
+        [dir="rtl"] .usage-info {
+            text-align: right !important;
+            direction: rtl !important;
+            font-family: Tahoma, Arial, sans-serif !important;
+        }
+
+        /* Force visibility and display */
+        .email-container,
+        .content-section,
+        .confirmation-card,
+        .details-section,
+        .usage-info,
+        .footer-content {
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        /* Confirmation Card */
+        .confirmation-card {
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        [dir="rtl"] .confirmation-card {
+            border-right: 4px solid #4caf50;
+            border-left: none;
+        }
+
+        [dir="ltr"] .confirmation-card {
+            border-left: 4px solid #4caf50;
+            border-right: none;
+        }
+
+        .confirmation-heading {
+            color: #2e7d32;
+            font-size: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        /* Details Section */
+        .details-section {
+            background-color: #f7f8fa;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .details-heading {
+            color: #0052FF;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #666666;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            color: #333333;
+            font-size: 15px;
+        }
+
+        /* Usage Info */
+        .usage-info {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 24px 0;
+            color: #666666;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            background-color: #4caf50;
+            color: #ffffff;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Installation Guides Section */
+        .installation-guides {
+            margin-top: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .guides-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .guides-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+        }
+
+        .guide-item {
+            padding: 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 6px !important;
+            text-decoration: none !important;
+            color: #333333 !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .guide-item:hover {
+            border-color: #0052FF !important;
+        }
+
+        .guide-title {
+            font-weight: 500 !important;
+            margin-bottom: 4px !important;
+            color: #0052FF !important;
+        }
+
+        .guide-description {
+            font-size: 13px !important;
+            color: #666666 !important;
+        }
+
+        /* Footer Styles */
+        .footer-container {
+            width: 100% !important;
+            margin-top: 48px !important;
+            padding-top: 32px !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+        .support-section {
+            margin-bottom: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .support-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .support-links {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 12px !important;
+        }
+
+        .support-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 8px 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 4px !important;
+            text-decoration: none !important;
+            color: #0052FF !important;
+        }
+
+        .company-info {
+            padding: 24px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+            color: #666666 !important;
+            font-size: 13px !important;
+        }
+
+        .company-name {
+            font-weight: 500 !important;
+            margin-bottom: 8px !important;
+        }
+
+        .company-details div {
+            margin-bottom: 4px !important;
+        }
+
+        .copyright {
+            color: #666666 !important;
+            font-size: 12px !important;
+            margin: 16px 0 !important;
+        }
+
+        .disclaimer {
+            font-size: 11px !important;
+            color: #999999 !important;
+            line-height: 1.4 !important;
+            padding: 16px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            /* Existing dark mode styles... */
+            .installation-guides {
+                background-color: #333333 !important;
+            }
+
+            .guide-item {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+            }
+
+            .guide-description {
+                color: #999999 !important;
+            }
+
+            .support-section {
+                background-color: #333333 !important;
+            }
+
+            .support-link {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+                color: #ffffff !important;
+            }
+
+            .company-info,
+            .copyright {
+                color: #999999 !important;
+            }
+
+            .disclaimer {
+                color: #808080 !important;
+            }
+
+            .footer-container,
+            .company-info,
+            .disclaimer {
+                border-color: #404040 !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            /* Existing responsive styles... */
+            .guides-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .support-links {
+                flex-direction: column !important;
+            }
+
+            .support-link {
+                width: 100% !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="email-container"
+     th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}">
+
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header(${userName})}"></div>
+
+    <!-- Main Content -->
+    <div class="content-section">
+        <!-- Confirmation Card -->
+        <div class="confirmation-card">
+            <h1 class="confirmation-heading" th:text="#{email.extra.logins.confirmation.thanks}">
+                Thank you for purchasing extra logins!
+            </h1>
+        </div>
+
+        <!-- Details Section -->
+        <div class="details-section">
+            <h2 class="details-heading" th:text="#{email.extra.logins.details}">Purchase Details:</h2>
+
+            <div class="detail-item">
+                <div class="detail-label">Plan</div>
+                <div class="detail-value" th:text="#{email.extra.logins.plan(${extraLogins.plan.name})}">Premium Plan
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Additional Logins</div>
+                <div class="detail-value" th:text="#{email.extra.logins.count(${extraLogins.loginCount})}">5 logins
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">
+                    <span class="status-badge" th:text="#{email.extra.logins.status}">Active</span>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-label">Validity</div>
+                <div class="detail-value">
+                    <span th:if="${extraLogins.expiryDate}"
+                          th:text="#{email.extra.logins.validity(${#temporals.format(extraLogins.expiryDate, 'dd-MM-yyyy HH:mm')})}">
+                        Valid until: DATE
+                    </span>
+                    <span th:unless="${extraLogins.expiryDate}"
+                          th:text="#{email.extra.logins.permanent}">
+                        Duration: Permanent
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Usage Info -->
+        <div class="usage-info" th:text="#{email.extra.logins.confirmation.usage}">
+            You can now use these additional logins across your devices.
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-content">
+        <div th:replace="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+</body>
+</html>

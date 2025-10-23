@@ -1,0 +1,45 @@
+type ExtraLoginsPlan {
+  id: ID!
+  name: String!
+  description: String!
+  loginCount: Int!
+  basePrice: Float!
+  durationDays: Int!
+  subscription: Boolean!
+  giftable: Boolean!
+  mobileProductId: String
+  bulkDiscountPercent: Float
+  minimumQuantity: Int!
+}
+
+type UserExtraLogins {
+  id: ID!
+  planName: String!
+  loginCount: Int!
+  startDate: LocalDateTime!
+  expiryDate: LocalDateTime
+  active: Boolean!
+  subscription: Boolean!
+  giftedByEmail: String
+}
+
+type PriceCalculation {
+  basePrice: Float!
+  loyaltyDiscount: Float
+  bulkDiscount: Float
+  finalPrice: Float!
+  currency: String!
+}
+
+input ExtraLoginsPlanInput {
+  name: String!
+  description: String!
+  loginCount: Int!
+  basePrice: Float!
+  durationDays: Int!
+  subscription: Boolean!
+  giftable: Boolean!
+  mobileProductId: String
+  bulkDiscountPercent: Float
+  minimumQuantity: Int!
+}
