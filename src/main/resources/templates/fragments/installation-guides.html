@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <style>
+        /* Installation Guides Container */
+        .guides-container {
+            margin: 32px 0 !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+            width: 100% !important;
+            display: block !important;
+        }
+
+        /* Section Title */
+        .guides-title {
+            color: #0052FF !important;
+            font-size: 18px !important;
+            font-weight: 500 !important;
+            margin-bottom: 24px !important;
+            display: block !important;
+        }
+
+        /* Download Grid */
+        .download-grid {
+            width: 100% !important;
+            display: table !important;
+            border-collapse: separate !important;
+            border-spacing: 0 16px !important;
+        }
+
+        /* Download Card */
+        .download-card {
+            display: table-row !important;
+            background-color: #ffffff !important;
+            text-decoration: none !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 8px !important;
+        }
+
+        .download-card-cell {
+            display: table-cell !important;
+            padding: 20px !important;
+            vertical-align: middle !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 8px !important;
+        }
+
+        /* Platform Icon */
+        .platform-icon {
+            width: 40px !important;
+            height: 40px !important;
+            margin-inline-end: 16px !important;
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+
+        /* Platform Details */
+        .platform-details {
+            display: inline-block !important;
+            vertical-align: middle !important;
+        }
+
+        .platform-name {
+            color: #333333 !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            margin-bottom: 4px !important;
+            display: block !important;
+        }
+
+        .platform-description {
+            color: #666666 !important;
+            font-size: 13px !important;
+            display: block !important;
+        }
+
+        /* Documentation Section */
+        .documentation-section {
+            margin-top: 24px !important;
+            padding-top: 24px !important;
+            border-top: 1px solid #e0e0e0 !important;
+            display: block !important;
+        }
+
+        .documentation-link {
+            color: #0052FF !important;
+            text-decoration: none !important;
+            font-size: 14px !important;
+            font-weight: 500 !important;
+            display: inline-block !important;
+        }
+
+        /* RTL Support */
+        [dir="rtl"] .guides-container {
+            text-align: right !important;
+            direction: rtl !important;
+            font-family: Tahoma, Arial, sans-serif !important;
+        }
+
+        [dir="rtl"] .platform-icon {
+            margin-left: 16px !important;
+            margin-right: 0 !important;
+        }
+
+        [dir="rtl"] .platform-details {
+            text-align: right !important;
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            .guides-container {
+                background-color: #1a1a1a !important;
+            }
+
+            .download-card-cell {
+                background-color: #262626 !important;
+                border-color: #333333 !important;
+            }
+
+            .platform-name {
+                color: #ffffff !important;
+            }
+
+            .platform-description {
+                color: #999999 !important;
+            }
+
+            .documentation-section {
+                border-color: #333333 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<div th:fragment="guides" class="guides-container">
+    <h2 class="guides-title" th:text="#{email.download.title}">Download OrbVPN</h2>
+
+    <table class="download-grid" cellspacing="0" cellpadding="0" border="0">
+        <!-- iOS/iPad -->
+        <tr class="download-card">
+            <td class="download-card-cell">
+                <a href="https://apps.apple.com/us/app/orbvpn/id6727010164" style="text-decoration: none; color: inherit;">
+                        <span class="platform-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="#000000">
+                                <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 22C14.32 22.05 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09997 22C7.78997 22.05 6.79997 20.68 5.95997 19.47C4.24997 17 2.93997 12.45 4.69997 9.39C5.56997 7.87 7.12997 6.91 8.81997 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/>
+                            </svg>
+                        </span>
+                    <span class="platform-details">
+                            <span class="platform-name" th:text="#{email.download.ios}">iOS/iPad/MacOS</span>
+                            <span class="platform-description" th:text="#{email.download.ios.desc}">For iPhone and iPad devices</span>
+                        </span>
+                </a>
+            </td>
+        </tr>
+
+        <!-- Android -->
+        <tr class="download-card">
+            <td class="download-card-cell">
+                <a href="https://play.google.com/store/apps/details?id=com.orbvpn.android" style="text-decoration: none; color: inherit;">
+                        <span class="platform-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="#3DDC84">
+                                <path d="M16.66 1.69L11 7.34L16.66 13l1.49-1.49L14.15 7.5l4-4-1.49-1.81zM8.71 4.72L7.22 3.23l-4 4 4 4 1.49-1.49-2.5-2.51 2.5-2.51zm13.41 10.53l-4-4-1.49 1.49 2.51 2.5-2.51 2.51 1.49 1.49 4-4zm-13.41 4.83l1.49 1.49 4-4-4-4-1.49 1.49 2.51 2.51-2.51 2.51z"/>
+                            </svg>
+                        </span>
+                    <span class="platform-details">
+                            <span class="platform-name" th:text="#{email.download.android}">Android</span>
+                            <span class="platform-description" th:text="#{email.download.android.desc}">For Android phones and tablets</span>
+                        </span>
+                </a>
+            </td>
+        </tr>
+
+        <!-- Windows -->
+        <tr class="download-card">
+            <td class="download-card-cell">
+                <a href="https://docs.google.com/document/d/1rp0IPuU7dabC1Fhiuejm7uSbw8WmF2O3lvEnC146UAA" style="text-decoration: none; color: inherit;">
+                        <span class="platform-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="#00A4EF">
+                                <path d="M3 5.1L10.5 4v6.8H3V5.1zm0 13.8l7.5 1.1V13H3v5.9zm8.5.1l9.5 1.4v-7.3H11.5v5.9zM11.5 4L21 2.3v7.5H11.5V4z"/>
+                            </svg>
+                        </span>
+                    <span class="platform-details">
+                            <span class="platform-name" th:text="#{email.download.windows}">Windows</span>
+                            <span class="platform-description" th:text="#{email.download.windows.desc}">For Windows PC and laptop</span>
+                        </span>
+                </a>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Documentation Section -->
+    <div class="documentation-section">
+        <p th:text="#{email.documentation.intro}">
+            Need help? Check our detailed documentation:
+        </p>
+        <a href="https://docs.orbvpn.com"
+           class="documentation-link"
+           th:text="#{email.documentation.link}">
+            Visit Documentation
+        </a>
+    </div>
+</div>
+</body>
+</html>

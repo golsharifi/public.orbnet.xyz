@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}"
+      th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title th:text="#{email.verification.success.title}">Email Verification Successful</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333333;
+            line-height: 1.6;
+        }
+
+        /* Default LTR font */
+        body,
+        .email-container,
+        .content-section,
+        .success-card,
+        .next-steps,
+        .guides-section {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        }
+
+        /* RTL font overrides */
+        [dir="rtl"] body,
+        [dir="rtl"] .email-container,
+        [dir="rtl"] .content-section,
+        [dir="rtl"] .success-card,
+        [dir="rtl"] .next-steps,
+        [dir="rtl"] .guides-section {
+            text-align: right !important;
+            direction: rtl !important;
+            font-family: Tahoma, Arial, sans-serif !important;
+        }
+
+        /* Force visibility and display */
+        .email-container,
+        .content-section,
+        .success-card,
+        .next-steps,
+        .guides-section,
+        .footer-content {
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        /* Success Card */
+        .success-card {
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        [dir="rtl"] .success-card {
+            border-right: 4px solid #4caf50;
+            border-left: none;
+        }
+
+        [dir="ltr"] .success-card {
+            border-left: 4px solid #4caf50;
+            border-right: none;
+        }
+
+        .success-heading {
+            color: #2e7d32;
+            font-size: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .success-message {
+            color: #1b5e20;
+            font-size: 16px;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Next Steps Section */
+        .next-steps {
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .next-steps-heading {
+            color: #0052FF;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .next-steps-message {
+            color: #666666;
+            font-size: 16px;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Guides Section */
+        .guides-section {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        /* Installation Guides Section */
+        .installation-guides {
+            margin-top: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .guides-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .guides-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+        }
+
+        .guide-item {
+            padding: 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 6px !important;
+            text-decoration: none !important;
+            color: #333333 !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .guide-item:hover {
+            border-color: #0052FF !important;
+        }
+
+        .guide-title {
+            font-weight: 500 !important;
+            margin-bottom: 4px !important;
+            color: #0052FF !important;
+        }
+
+        .guide-description {
+            font-size: 13px !important;
+            color: #666666 !important;
+        }
+
+        /* Footer Styles */
+        .footer-container {
+            width: 100% !important;
+            margin-top: 48px !important;
+            padding-top: 32px !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+        .support-section {
+            margin-bottom: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .support-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .support-links {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 12px !important;
+        }
+
+        .support-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 8px 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 4px !important;
+            text-decoration: none !important;
+            color: #0052FF !important;
+        }
+
+        .company-info {
+            padding: 24px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+            color: #666666 !important;
+            font-size: 13px !important;
+        }
+
+        .company-name {
+            font-weight: 500 !important;
+            margin-bottom: 8px !important;
+        }
+
+        .company-details div {
+            margin-bottom: 4px !important;
+        }
+
+        .copyright {
+            color: #666666 !important;
+            font-size: 12px !important;
+            margin: 16px 0 !important;
+        }
+
+        .disclaimer {
+            font-size: 11px !important;
+            color: #999999 !important;
+            line-height: 1.4 !important;
+            padding: 16px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a !important;
+                color: #ffffff !important;
+                width: 100% !important;
+            }
+
+            .email-container {
+                background-color: #262626 !important;
+            }
+
+            .success-card {
+                background-color: rgba(76, 175, 80, 0.1) !important;
+            }
+
+            .next-steps {
+                background-color: #333333 !important;
+            }
+
+            .next-steps-message {
+                color: #cccccc !important;
+            }
+
+            .guides-section {
+                background-color: #333333 !important;
+                border-color: #404040 !important;
+            }
+
+            .installation-guides {
+                background-color: #333333 !important;
+            }
+
+            .guide-item {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+            }
+
+            .guide-description {
+                color: #999999 !important;
+            }
+
+            .support-section {
+                background-color: #333333 !important;
+            }
+
+            .support-link {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+                color: #ffffff !important;
+            }
+
+            .company-info,
+            .copyright {
+                color: #999999 !important;
+            }
+
+            .disclaimer {
+                color: #808080 !important;
+            }
+
+            .footer-container,
+            .company-info,
+            .disclaimer {
+                border-color: #404040 !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            /* Existing responsive styles... */
+            .guides-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .support-links {
+                flex-direction: column !important;
+            }
+
+            .support-link {
+                width: 100% !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="email-container"
+     th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}">
+
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header(${userName})}"></div>
+
+    <!-- Main Content -->
+    <div class="content-section">
+        <!-- Success Card -->
+        <div class="success-card">
+            <h1 class="success-heading" th:text="#{email.verification.success.title}">
+                Email Verification Successful
+            </h1>
+            <p class="success-message" th:text="#{email.verification.success.message}">
+                Your email address has been successfully verified. Thank you for completing the verification process.
+            </p>
+        </div>
+
+        <!-- Next Steps -->
+        <div class="next-steps">
+            <h2 class="next-steps-heading">What's Next?</h2>
+            <p class="next-steps-message" th:text="#{email.verification.success.next}">
+                You can now enjoy all the features and benefits of your OrbVPN account.
+            </p>
+        </div>
+
+        <!-- Installation Guides -->
+        <div class="guides-section">
+            <div th:replace="~{fragments/installation-guides :: guides}"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-content">
+        <div th:replace="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+</body>
+</html>

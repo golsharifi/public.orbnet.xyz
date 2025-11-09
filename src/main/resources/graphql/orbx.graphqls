@@ -1,0 +1,136 @@
+# ========== TYPES FOR APP CACHING ==========
+
+# Lightweight server info for caching in app
+# Returns only essential data for server selection
+type OrbXServerInfo {
+  id: ID!
+  name: String!
+  region: String!
+  location: String!
+  country: String!
+  endpoint: String! # DNS hostname (stable)
+  hostname: String # Same as endpoint
+  ipAddress: String # For debugging/fallback
+  port: Int!
+  wireguardPort: Int!
+  wireguardPublicKey: String
+  protocols: [String!]!
+  maxConnections: Int!
+  currentConnections: Int!
+  status: String!
+  isOnline: Boolean!
+  createdAt: String!
+}
+
+# WireGuard config response (only when connecting)
+# Contains all info needed to establish WireGuard tunnel
+type OrbXWireGuardConfigResponse {
+  privateKey: String!
+  publicKey: String
+  allocatedIP: String!
+  serverEndpoint: String! # DNS hostname for connection
+  serverPort: Int!
+  serverPublicKey: String
+  dns: [String!]!
+  mtu: Int!
+  persistentKeepalive: Int!
+  createdAt: String!
+}
+
+# ========== DETAILED SERVER VIEW ==========
+
+# Complete OrbX Server view for admin and detailed queries
+type OrbXServerView {
+  id: ID!
+  name: String!
+  region: String!
+  hostname: String
+  ipAddress: String
+  port: Int!
+  location: String!
+  country: String!
+  countryCode: String
+  protocols: [String!]!
+  quantumSafe: Boolean!
+  online: Boolean!
+  enabled: Boolean!
+  currentConnections: Int!
+  maxConnections: Int!
+  bandwidthLimitMbps: Int
+  cpuUsage: Float
+  memoryUsage: Float
+  latencyMs: Int
+  version: String
+  publicKey: String
+  tlsFingerprint: String
+  lastHeartbeat: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+# ========== INPUT TYPES ==========
+
+# Input for registering/updating OrbX server
+input OrbXServerInput {
+  name: String
+  region: String
+  hostname: String
+  ipAddress: String
+  port: Int
+  location: String
+  country: String
+  protocols: [String!]
+  maxConnections: Int
+  bandwidthLimitMbps: Int
+  publicKey: String
+  tlsCertificate: String
+}
+
+# Server metrics input
+input OrbXServerMetricsInput {
+  currentConnections: Int!
+  cpuUsage: Float!
+  memoryUsage: Float!
+  latencyMs: Int
+}
+
+# Usage tracking input
+input OrbXUsageInput {
+  userId: ID!
+  serverId: ID!
+  protocol: String!
+  bytesSent: Int!
+  bytesReceived: Int!
+  duration: Int!
+  sessionId: String
+  disconnectedAt: DateTime
+}
+
+# ========== RESULT TYPES ==========
+
+# Server registration result with credentials
+# Only time API key and JWT secret are visible
+type OrbXServerRegistrationResult {
+  server: OrbXServerView!
+  apiKey: String!
+  jwtSecret: String!
+}
+
+# OrbX server configuration
+type OrbXConfig {
+  serverId: ID!
+  endpoint: String!
+  port: Int!
+  publicKey: String
+  protocols: [String!]!
+  tlsFingerprint: String
+  quantumSafe: Boolean!
+  region: String!
+}
+
+# Usage recording result
+type OrbXUsageResult {
+  success: Boolean!
+  usageId: ID
+  message: String
+}

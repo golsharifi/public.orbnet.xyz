@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}"
+      th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title th:text="#{email.giftcard.redemption.title}">OrbVPN: Gift Card Redemption Confirmation</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333333;
+            line-height: 1.6;
+            width: 100% !important;
+        }
+
+        /* Default LTR font */
+        body,
+        .email-container,
+        .content-section,
+        .success-banner,
+        .details-card,
+        .steps-card {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        }
+
+        /* RTL font overrides */
+        [dir="rtl"] body,
+        [dir="rtl"] .email-container,
+        [dir="rtl"] .content-section,
+        [dir="rtl"] .success-banner,
+        [dir="rtl"] .details-card,
+        [dir="rtl"] .steps-card {
+            text-align: right !important;
+            direction: rtl !important;
+            font-family: Tahoma, Arial, sans-serif !important;
+        }
+
+        /* Force visibility and display */
+        .email-container,
+        .content-section,
+        .success-banner,
+        .details-card,
+        .steps-card,
+        .footer-content {
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+        }
+
+        /* Success Banner */
+        .success-banner {
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .success-heading {
+            color: #2e7d32;
+            font-size: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .success-message {
+            color: #1b5e20;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        /* Details Card */
+        .details-card {
+            background-color: #f7f8fa;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        [dir="rtl"] .details-card {
+            border-right: 4px solid #0052FF;
+            border-left: none;
+        }
+
+        [dir="ltr"] .details-card {
+            border-left: 4px solid #0052FF;
+            border-right: none;
+        }
+
+        .details-heading {
+            color: #0052FF;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #666666;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-family: monospace;
+            font-size: 15px;
+            color: #333333;
+        }
+
+        /* Steps Card */
+        .steps-card {
+            background-color: #edf6ff;
+            border-radius: 8px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .steps-heading {
+            color: #0052FF;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .step-item {
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-number {
+            background-color: #0052FF;
+            color: #ffffff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-inline-end: 12px;
+            font-weight: 500;
+        }
+
+        /* Installation Guides Section */
+        .installation-guides {
+            margin-top: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .guides-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .guides-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+        }
+
+        .guide-item {
+            padding: 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 6px !important;
+            text-decoration: none !important;
+            color: #333333 !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .guide-item:hover {
+            border-color: #0052FF !important;
+        }
+
+        .guide-title {
+            font-weight: 500 !important;
+            margin-bottom: 4px !important;
+            color: #0052FF !important;
+        }
+
+        .guide-description {
+            font-size: 13px !important;
+            color: #666666 !important;
+        }
+
+        /* Footer Styles */
+        .footer-container {
+            width: 100% !important;
+            margin-top: 48px !important;
+            padding-top: 32px !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+        .support-section {
+            margin-bottom: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .support-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .support-links {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 12px !important;
+        }
+
+        .support-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 8px 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 4px !important;
+            text-decoration: none !important;
+            color: #0052FF !important;
+        }
+
+        .company-info {
+            padding: 24px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+            color: #666666 !important;
+            font-size: 13px !important;
+        }
+
+        .company-name {
+            font-weight: 500 !important;
+            margin-bottom: 8px !important;
+        }
+
+        .company-details div {
+            margin-bottom: 4px !important;
+        }
+
+        .copyright {
+            color: #666666 !important;
+            font-size: 12px !important;
+            margin: 16px 0 !important;
+        }
+
+        .disclaimer {
+            font-size: 11px !important;
+            color: #999999 !important;
+            line-height: 1.4 !important;
+            padding: 16px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            /* Existing dark mode styles... */
+
+            .installation-guides {
+                background-color: #333333 !important;
+            }
+
+            .guide-item {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+            }
+
+            .guide-description {
+                color: #999999 !important;
+            }
+
+            .support-section {
+                background-color: #333333 !important;
+            }
+
+            .support-link {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+                color: #ffffff !important;
+            }
+
+            .company-info,
+            .copyright {
+                color: #999999 !important;
+            }
+
+            .disclaimer {
+                color: #808080 !important;
+            }
+
+            .footer-container,
+            .company-info,
+            .disclaimer {
+                border-color: #404040 !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            /* Existing responsive styles... */
+
+            .guides-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .support-links {
+                flex-direction: column !important;
+            }
+
+            .support-link {
+                width: 100% !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div class="email-container"
+     th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}">
+
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header(${userName})}"></div>
+
+    <!-- Main Content -->
+    <div class="content-section">
+        <!-- Success Banner -->
+        <div class="success-banner">
+            <div class="success-icon">🎉</div>
+            <h1 class="success-heading" th:text="#{email.giftcard.redemption.success.title}">
+                Gift Card Redeemed!
+            </h1>
+            <p class="success-message" th:text="#{email.giftcard.redemption.success}">
+                Your gift card has been successfully redeemed and added to your account.
+            </p>
+        </div>
+
+        <!-- Gift Card Details -->
+        <div class="details-card">
+            <h2 class="details-heading" th:text="#{email.giftcard.details}">Gift Card Details</h2>
+            <div class="detail-item">
+                <div class="detail-label" th:text="#{email.giftcard.code}">Code:</div>
+                <div class="detail-value" th:text="${giftCardCode}">XXXX-XXXX-XXXX</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label" th:text="#{email.giftcard.plan}">Plan:</div>
+                <div class="detail-value" th:text="${groupName}">Premium Plan</div>
+            </div>
+            <div class="detail-item">
+                <div class="detail-label" th:text="#{email.giftcard.expiry}">Expires At:</div>
+                <div class="detail-value" th:text="${#temporals.format(expirationDate, 'dd-MM-yyyy HH:mm')}">
+                    01-01-2024 00:00
+                </div>
+            </div>
+        </div>
+
+        <!-- What's Next Section -->
+        <div class="steps-card">
+            <h2 class="steps-heading" th:text="#{email.giftcard.next.steps}">What's Next?</h2>
+            <div class="step-item">
+                <span class="step-number">1</span>
+                <span th:text="#{email.giftcard.step.download}">Download OrbVPN on your devices</span>
+            </div>
+            <div class="step-item">
+                <span class="step-number">2</span>
+                <span th:text="#{email.giftcard.step.login}">Log in with your account credentials</span>
+            </div>
+            <div class="step-item">
+                <span class="step-number">3</span>
+                <span th:text="#{email.giftcard.step.connect}">Connect to any of our secure servers</span>
+            </div>
+        </div>
+
+        <!-- Installation Guides -->
+        <div th:replace="~{fragments/installation-guides :: guides}"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-content">
+        <div th:replace="~{fragments/footer :: footer}"></div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}"
+      th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title th:text="#{email.giftcard.cancellation.title}">OrbVPN: Gift Card Cancelled</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: #f5f5f5 !important;
+            color: #333333 !important;
+            line-height: 1.6 !important;
+            width: 100% !important;
+        }
+
+        /* Default LTR font */
+        body,
+        .email-container,
+        .content-section,
+        .cancellation-card,
+        .notice-header,
+        .giftcard-details,
+        .support-section {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        }
+
+        /* RTL font overrides */
+        [dir="rtl"] body,
+        [dir="rtl"] .email-container,
+        [dir="rtl"] .content-section,
+        [dir="rtl"] .cancellation-card,
+        [dir="rtl"] .notice-header,
+        [dir="rtl"] .giftcard-details,
+        [dir="rtl"] .support-section {
+            text-align: right !important;
+            direction: rtl !important;
+            font-family: Tahoma, Arial, sans-serif !important;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            padding: 32px 24px !important;
+            background-color: #ffffff !important;
+        }
+
+        /* Cancellation Card */
+        .cancellation-card {
+            background-color: #ffebee !important;
+            border-radius: 8px !important;
+            padding: 24px !important;
+            margin: 24px 0 !important;
+        }
+
+        [dir="rtl"] .cancellation-card {
+            border-right: 4px solid #d32f2f !important;
+            border-left: none !important;
+        }
+
+        [dir="ltr"] .cancellation-card {
+            border-left: 4px solid #d32f2f !important;
+            border-right: none !important;
+        }
+
+        /* Notice Header */
+        .notice-header {
+            color: #d32f2f !important;
+            font-size: 20px !important;
+            font-weight: 600 !important;
+            margin-bottom: 16px !important;
+        }
+
+        /* Message Text */
+        .message-text {
+            color: #333333 !important;
+            font-size: 16px !important;
+            margin-bottom: 24px !important;
+            line-height: 1.6 !important;
+        }
+
+        /* Gift Card Details */
+        .giftcard-details {
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 6px !important;
+            padding: 20px !important;
+            margin: 20px 0 !important;
+        }
+
+        .details-header {
+            color: #666666 !important;
+            font-weight: 600 !important;
+            margin-bottom: 16px !important;
+            display: block !important;
+        }
+
+        .details-row {
+            display: flex !important;
+            margin-bottom: 12px !important;
+            padding: 8px !important;
+            background-color: #f5f5f5 !important;
+            border-radius: 4px !important;
+        }
+
+        .details-label {
+            font-weight: 500 !important;
+            color: #666666 !important;
+            min-width: 120px !important;
+        }
+
+        .details-value {
+            color: #333333 !important;
+        }
+
+        /* Support Section */
+        .support-section {
+            background-color: #f5f5f5 !important;
+            border-radius: 6px !important;
+            padding: 20px !important;
+            margin-top: 24px !important;
+        }
+
+        .support-header {
+            color: #333333 !important;
+            font-weight: 600 !important;
+            margin-bottom: 16px !important;
+        }
+
+        /* Installation Guides Section */
+        .installation-guides {
+            margin-top: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .guides-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .guides-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+        }
+
+        .guide-item {
+            padding: 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 6px !important;
+            text-decoration: none !important;
+            color: #333333 !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .guide-item:hover {
+            border-color: #0052FF !important;
+        }
+
+        .guide-title {
+            font-weight: 500 !important;
+            margin-bottom: 4px !important;
+            color: #0052FF !important;
+        }
+
+        .guide-description {
+            font-size: 13px !important;
+            color: #666666 !important;
+        }
+
+        /* Footer Styles */
+        .footer-container {
+            width: 100% !important;
+            margin-top: 48px !important;
+            padding-top: 32px !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+        .support-section {
+            margin-bottom: 32px !important;
+            padding: 24px !important;
+            background-color: #f7f8fa !important;
+            border-radius: 8px !important;
+        }
+
+        .support-heading {
+            color: #0052FF !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            margin-bottom: 16px !important;
+        }
+
+        .support-links {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            gap: 12px !important;
+        }
+
+        .support-link {
+            display: inline-flex !important;
+            align-items: center !important;
+            padding: 8px 16px !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 4px !important;
+            text-decoration: none !important;
+            color: #0052FF !important;
+        }
+
+        .company-info {
+            padding: 24px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+            color: #666666 !important;
+            font-size: 13px !important;
+        }
+
+        .company-name {
+            font-weight: 500 !important;
+            margin-bottom: 8px !important;
+        }
+
+        .company-details div {
+            margin-bottom: 4px !important;
+        }
+
+        .copyright {
+            color: #666666 !important;
+            font-size: 12px !important;
+            margin: 16px 0 !important;
+        }
+
+        .disclaimer {
+            font-size: 11px !important;
+            color: #999999 !important;
+            line-height: 1.4 !important;
+            padding: 16px 0 !important;
+            border-top: 1px solid #e0e0e0 !important;
+        }
+
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1a1a1a !important;
+                color: #ffffff !important;
+                width: 100% !important;
+            }
+
+            .email-container {
+                background-color: #262626 !important;
+            }
+
+            .cancellation-card {
+                background-color: rgba(211, 47, 47, 0.1) !important;
+            }
+
+            .message-text {
+                color: #ffffff !important;
+            }
+
+            .giftcard-details {
+                background-color: #333333 !important;
+                border-color: #404040 !important;
+            }
+
+            .details-row {
+                background-color: #1a1a1a !important;
+            }
+
+            .details-value {
+                color: #ffffff !important;
+            }
+
+            .support-section {
+                background-color: #333333 !important;
+            }
+
+            .installation-guides {
+                background-color: #333333 !important;
+            }
+
+            .guide-item {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+            }
+
+            .guide-description {
+                color: #999999 !important;
+            }
+
+            .support-section {
+                background-color: #333333 !important;
+            }
+
+            .support-link {
+                background-color: #262626 !important;
+                border-color: #404040 !important;
+                color: #ffffff !important;
+            }
+
+            .company-info,
+            .copyright {
+                color: #999999 !important;
+            }
+
+            .disclaimer {
+                color: #808080 !important;
+            }
+
+            .footer-container,
+            .company-info,
+            .disclaimer {
+                border-color: #404040 !important;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .email-container {
+                padding: 24px 16px !important;
+            }
+
+            .cancellation-card {
+                padding: 20px !important;
+            }
+
+            .notice-header {
+                font-size: 18px !important;
+            }
+
+            .guides-grid {
+                grid-template-columns: 1fr !important;
+            }
+
+            .support-links {
+                flex-direction: column !important;
+            }
+
+            .support-link {
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr>
+        <td align="center">
+            <div class="email-container"
+                 th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}">
+
+                <!-- Header -->
+                <div th:replace="~{fragments/header :: header(${userName})}"></div>
+
+                <!-- Main Content -->
+                <div class="content-section">
+                    <!-- Cancellation Card -->
+                    <div class="cancellation-card">
+                        <!-- Notice Header -->
+                        <div class="notice-header" th:text="#{email.giftcard.cancellation.notice}">
+                            Gift Card Cancellation Notice
+                        </div>
+
+                        <!-- Message -->
+                        <div class="message-text" th:text="#{email.giftcard.cancellation.message}">
+                            This is to inform you that a gift card associated with your account has been cancelled.
+                        </div>
+
+                        <!-- Gift Card Details -->
+                        <div class="giftcard-details">
+                            <span class="details-header" th:text="#{email.giftcard.details}">Gift Card Details:</span>
+                            <div class="details-row">
+                                <span class="details-label">Code:</span>
+                                <span class="details-value" th:text="#{email.giftcard.code(${giftCard.code})}">Code</span>
+                            </div>
+                            <div class="details-row">
+                                <span class="details-label">Plan:</span>
+                                <span class="details-value" th:text="#{email.giftcard.plan(${giftCard.group.name})}">Plan</span>
+                            </div>
+                            <div class="details-row">
+                                <span class="details-label">Cancelled At:</span>
+                                <span class="details-value" th:text="#{email.giftcard.cancelled.at(${giftCard.cancelledAt})}">Cancelled At</span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Message -->
+                        <div class="message-text" th:text="#{email.giftcard.cancellation.contact}">
+                            If you believe this was done in error or have any questions, please contact our support team immediately.
+                        </div>
+                    </div>
+
+                    <!-- Support Section -->
+                    <div class="support-section">
+                        <div class="support-header" th:text="#{email.support.options}">Support Options:</div>
+                        <div th:replace="~{fragments/contact-options :: options}"></div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="footer-content">
+                    <div th:replace="~{fragments/footer :: footer}"></div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

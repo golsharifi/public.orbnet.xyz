@@ -1,0 +1,14 @@
+type StripePaymentResponse {
+  clientSecret: String
+  paymentIntentId: String
+  requiresAction: Boolean
+  error: String
+  subscription: StripeSubscription
+}
+
+type StripeSubscription {
+  id: String!
+  status: String!
+  currentPeriodEnd: LocalDateTime
+  cancelAtPeriodEnd: Boolean
+}
