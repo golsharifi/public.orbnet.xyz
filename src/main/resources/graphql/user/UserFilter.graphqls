@@ -1,0 +1,79 @@
+# User filter input for advanced filtering
+input UserFilterInput {
+  # Subscription status filters (multi-select)
+  subscriptionStatuses: [SubscriptionStatusFilter]
+
+  # Account status
+  accountEnabled: Boolean
+
+  # Role filters (multi-select)
+  roles: [String]
+
+  # Has devices
+  hasDevices: Boolean
+
+  # Has token balance
+  hasTokenBalance: Boolean
+
+  # Has referrals
+  hasReferrals: Boolean
+
+  # Has open tickets
+  hasOpenTickets: Boolean
+
+  # Contact info filters
+  hasTelegram: Boolean
+  hasPhone: Boolean
+
+  # Location filters (multi-select)
+  countries: [String]
+
+  # Service group/plan filters (multi-select)
+  groupIds: [Int]
+  serviceGroupIds: [Int]
+
+  # Reseller filter
+  resellerId: Int
+
+  # Date range filters
+  createdAfter: LocalDateTime
+  createdBefore: LocalDateTime
+  expiresAfter: LocalDateTime
+  expiresBefore: LocalDateTime
+
+  # Payment gateway filters (multi-select)
+  paymentGateways: [GatewayName]
+
+  # OAuth provider filters (multi-select)
+  oauthProviders: [SocialMedia]
+
+  # Has passkeys filter
+  hasPasskeys: Boolean
+
+  # Has OAuth connection filter
+  hasOauth: Boolean
+}
+
+enum SubscriptionStatusFilter {
+  ACTIVE
+  EXPIRED
+  EXPIRING_SOON
+  NO_SUBSCRIPTION
+  TRIAL
+}
+
+enum GatewayName {
+  FREE
+  STRIPE
+  APPLE_STORE
+  GOOGLE_PLAY
+  GIFT_CARD
+  PAYPAL
+  COINBASE
+  PARSPAL
+  COIN_PAYMENT
+  NOW_PAYMENT
+  YANDEX_PAY
+  RESELLER_CREDIT
+  TOKEN_BASED
+}

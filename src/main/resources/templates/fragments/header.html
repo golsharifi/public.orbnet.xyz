@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="header(userName)">
+    <!--[if mso]>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td style="padding: 0;">
+    <![endif]-->
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 32px;">
+        <tr>
+            <td align="center" style="padding: 0;">
+                <!-- Logo -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                        <td style="padding-bottom: 24px;">
+                            <img src="cid:logo"
+                                 width="120"
+                                 height="40"
+                                 alt="OrbVPN"
+                                 th:alt="#{email.logo.alt}"
+                                 style="display: block; width: 120px; height: auto; border: 0;">
+                        </td>
+                    </tr>
+                </table>
+                <!-- Greeting -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <tr>
+                        <td th:align="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'right' : 'left'}"
+                            style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 24px; color: #374151;">
+                            <span th:if="${userName != null}" th:text="#{email.greeting(${userName})}">Hi there,</span>
+                            <span th:if="${userName == null}" th:text="#{email.greeting.generic}">Hi there,</span>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <!--[if mso]>
+    </td></tr></table>
+    <![endif]-->
+</div>
+</body>
+</html>

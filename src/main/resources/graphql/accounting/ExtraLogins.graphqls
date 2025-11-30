@@ -1,0 +1,130 @@
+type ExtraLoginsPlan {
+  id: ID!
+  name: String!
+  description: String!
+  loginCount: Int!
+  basePrice: Float!
+  durationDays: Int!
+  subscription: Boolean!
+  giftable: Boolean!
+  mobileProductId: String
+  bulkDiscountPercent: Float
+  minimumQuantity: Int!
+}
+
+type UserExtraLogins {
+  id: ID!
+  planName: String!
+  loginCount: Int!
+  startDate: LocalDateTime!
+  expiryDate: LocalDateTime
+  active: Boolean!
+  subscription: Boolean!
+  giftedByEmail: String
+}
+
+type PriceCalculation {
+  basePrice: Float!
+  loyaltyDiscount: Float
+  bulkDiscount: Float
+  finalPrice: Float!
+  currency: String!
+}
+
+input ExtraLoginsPlanInput {
+  name: String!
+  description: String!
+  loginCount: Int!
+  basePrice: Float!
+  durationDays: Int!
+  subscription: Boolean!
+  giftable: Boolean!
+  mobileProductId: String
+  bulkDiscountPercent: Float
+  minimumQuantity: Int!
+}
+
+"""
+Detailed device pricing calculation result.
+Shows pro-rata pricing based on remaining subscription time.
+"""
+type DevicePriceCalculation {
+  deviceCount: Int!
+  remainingDays: Int!
+  subscriptionDuration: Int!
+  dailyRatePerDevice: Float!
+  priceBeforeDiscount: Float!
+  discountPercent: Float
+  resellerDiscount: Float
+  finalPrice: Float!
+  currency: String!
+  subscriptionExpiresAt: LocalDateTime
+  planId: ID
+  planName: String
+  durationDays: Int
+  message: String
+  savingsAmount: Float
+}
+
+"""
+Result of reseller device addon operation.
+"""
+type ResellerDeviceAddResult {
+  success: Boolean!
+  userId: Int!
+  userEmail: String!
+  devicesAdded: Int!
+  totalDevices: Int!
+  amountCharged: Float!
+  resellerNewBalance: Float!
+  message: String
+  errorCode: String
+}
+
+"""
+Device usage statistics for a user.
+"""
+type DeviceUsageStats {
+  userId: Int!
+  userEmail: String!
+  allowedDevices: Int!
+  activeDevices: Int!
+  totalDevicesRegistered: Int!
+  devicesLastDay: Int!
+  devicesLastWeek: Int!
+  devicesLastMonth: Int!
+  uniqueDeviceModels: Int!
+  uniqueOperatingSystems: Int!
+  averageSessionMinutes: Float!
+  deviceModels: [String!]!
+  operatingSystems: [String!]!
+  suspiciousPatterns: [String!]!
+  hasSuspiciousActivity: Boolean!
+  utilizationPercent: Float!
+}
+
+"""
+Reseller device revenue summary.
+"""
+type ResellerDeviceRevenue {
+  resellerId: Int!
+  resellerEmail: String!
+  totalDevicesPurchased: Int!
+  totalRevenue: Float!
+  revenueLastDay: Float!
+  revenueLastWeek: Float!
+  revenueLastMonth: Float!
+  transactionCount: Int!
+  averageDevicePrice: Float!
+  topUsers: [DeviceRevenueByUser!]!
+}
+
+"""
+Device revenue breakdown by user.
+"""
+type DeviceRevenueByUser {
+  userId: Int!
+  userEmail: String!
+  devicesPurchased: Int!
+  totalSpent: Float!
+}

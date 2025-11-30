@@ -1,0 +1,68 @@
+# Admin Audit Log Schema
+
+type AdminAuditLog {
+    id: ID!
+    adminEmail: String!
+    actionType: String!
+    targetType: String!
+    targetId: String
+    targetIdentifier: String
+    beforeValue: String
+    afterValue: String
+    description: String
+    ipAddress: String
+    userAgent: String
+    success: Boolean!
+    errorMessage: String
+    createdAt: String!
+}
+
+type AdminAuditLogPage {
+    content: [AdminAuditLog!]!
+    totalElements: Int!
+    totalPages: Int!
+    size: Int!
+    number: Int!
+}
+
+extend type Query {
+    # Get paginated audit logs with optional filters
+    adminAuditLogs(
+        adminId: Int
+        actionType: String
+        targetType: String
+        targetId: String
+        startDate: String
+        endDate: String
+        page: Int
+        size: Int
+    ): AdminAuditLogPage!
+
+    # Get audit history for a specific user
+    userAuditHistory(
+        userId: Int!
+        page: Int
+        size: Int
+    ): AdminAuditLogPage!
+
+    # Get recent actions by a specific admin
+    recentAdminActions(adminEmail: String!): [AdminAuditLog!]!
+
+    # Get failed actions
+    failedAdminActions(
+        page: Int
+        size: Int
+    ): AdminAuditLogPage!
+
+    # Get action statistics by type (returns JSON map)
+    auditStatsByAction(
+        startDate: String
+        endDate: String
+    ): String!
+
+    # Get action statistics by admin (returns JSON map)
+    auditStatsByAdmin(
+        startDate: String
+        endDate: String
+    ): String!
+}

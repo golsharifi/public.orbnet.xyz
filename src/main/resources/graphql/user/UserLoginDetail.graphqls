@@ -1,0 +1,5 @@
+type UserLoginDetail {
+  id: ID!
+  username: String!
+  decryptedPassword: String!
+}
