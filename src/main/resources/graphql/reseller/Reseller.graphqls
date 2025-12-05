@@ -1,0 +1,151 @@
+input ResellerCreate {
+    email: String
+    password: String
+    credit: String
+    level: ResellerLevelName
+    phone: String
+}
+
+"""
+@deprecated Use editProfileByAdmin to edit reseller profile (firstName, lastName, phone).
+This input is only kept for legacy compatibility.
+"""
+input ResellerEdit {
+    email: String
+    phone: String
+}
+
+type ResellerView {
+    id: Int
+    "The associated user account (for profile editing, use editProfileByAdmin with this userId)"
+    user: UserView
+    "Convenience field - same as user.id"
+    userId: Int
+    email: String
+    firstName: String
+    lastName: String
+    credit: String
+    level: ResellerLevelName
+    phone: String
+    serviceGroups: [ServiceGroupView]
+    enabled: Boolean
+    createdAt: LocalDateTime
+    updatedAt: LocalDateTime
+}
+
+input ResellerLevelEdit {
+    discountPercent: String!
+    minScore: String!
+}
+
+type ResellerLevelView {
+    id: Int!
+    name: ResellerLevelName!
+    discountPercent: String!
+    minScore: String!
+}
+
+type ResellerCreditView {
+    id: Int!
+    email: String!
+    credit: Float
+}
+
+input ResellerLevelCoefficientsEdit {
+    monthCreditPercent: String
+    monthCreditMax: String
+    currentCreditPercent: String
+    currentCreditMax: String
+    activeSubscriptionPercent: String
+    activeSubscriptionMax: String
+    membershipDurationPercent: String
+    membershipDurationMax: String
+    depositIntervalManualDays: String
+    depositIntervalMax: String
+    totalSalePercent: String
+    totalSaleMax: String
+    monthSalePercent: String
+    monthSaleMax: String
+}
+
+type ResellerLevelCoefficientsView {
+    monthCreditPercent: String
+    monthCreditMax: String
+    currentCreditPercent: String
+    currentCreditMax: String
+    activeSubscriptionPercent: String
+    activeSubscriptionMax: String
+    membershipDurationPercent: String
+    membershipDurationMax: String
+    depositIntervalManualDays: String
+    depositIntervalMax: String
+    totalSalePercent: String
+    totalSaleMax: String
+    monthSalePercent: String
+    monthSaleMax: String
+}
+
+enum ResellerLevelName {
+    BRONZE, SILVER, GOLD, DIAMOND, STARTER, OWNER
+}
+
+input ResellerScoreLimitEdit {
+    symbol: String
+    maxLimit: Int
+}
+
+type ResellerScoreLimit {
+    scoreDefinition: String
+    symbol: String
+    maximumLimit: Int
+}
+
+type ResellerScore {
+    resellerScore: Float
+    resellerId: Int
+}
+
+"""
+Detailed breakdown of a reseller's performance score.
+Shows individual component scores and the values they're based on.
+Used for transparency so resellers understand how their level is calculated.
+"""
+type ResellerScoreBreakdown {
+    resellerId: Int!
+    resellerEmail: String!
+    currentLevel: String!
+    totalScore: String!
+    isOwner: Boolean!
+
+    # Monthly credit additions
+    monthCreditScore: String
+    monthCreditValue: String
+
+    # Current account balance
+    balanceScore: String
+    balanceValue: String
+
+    # Active subscriptions
+    subscriptionScore: String
+    subscriptionCount: Int
+
+    # Membership duration
+    membershipScore: String
+    membershipDays: Int
+
+    # Deposit frequency
+    depositIntervalScore: String
+
+    # Lifetime sales
+    lifetimeSalesScore: String
+    lifetimeSalesValue: String
+
+    # Monthly sales
+    monthSalesScore: String
+    monthSalesValue: String
+
+    # Recommended level based on current score
+    recommendedLevel: String
+    nextLevelScore: String
+    pointsToNextLevel: String
+}

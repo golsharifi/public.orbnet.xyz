@@ -1,0 +1,71 @@
+type ConnectionStatsView {
+  id: ID!
+  serverId: ID!
+  serverName: String!
+  connectionStart: DateTime!
+  connectionEnd: DateTime
+  dataTransferred: Float!
+  cpuUsage: Float!
+  memoryUsage: Float!
+  uploadSpeed: Float!
+  downloadSpeed: Float!
+  networkSpeed: Float!
+  responseTime: Int!
+  latency: Int!
+  tokensCost: Float
+  tokensEarned: Float
+}
+
+type ConnectionAverages {
+  averageUploadSpeed: Float!
+  averageDownloadSpeed: Float!
+  averageNetworkSpeed: Float!
+  averageResponseTime: Int!
+  averageLatency: Int!
+}
+
+type ServerUsageStats {
+  serverId: ID!
+  serverName: String!
+  totalConnections: Int!
+  totalTime: Int!
+  totalDataTransferred: Float!
+  averagePerformance: ConnectionAverages!
+  lastUsed: DateTime!
+}
+
+type UserConnectionDashboard {
+  currentConnection: ConnectionStatsView
+  recentConnections: [ConnectionStatsView!]!
+  totalDataTransferred: Float!
+  averageMetrics: ConnectionAverages!
+  serverHistory: [ServerUsageStats!]!
+}
+
+type ConnectionStatsPage {
+  content: [ConnectionStatsView!]!
+  totalElements: Int!
+  totalPages: Int!
+  number: Int!
+  size: Int!
+}
+
+type TimeSeriesPoint {
+  timestamp: DateTime!
+  value: Float!
+  metric: String!
+}
+
+type HistoricalStatsView {
+  dataTransferred: [TimeSeriesPoint!]!
+  tokensCost: [TimeSeriesPoint!]!
+  tokensEarned: [TimeSeriesPoint!]!
+  connections: [TimeSeriesPoint!]!
+  performanceMetrics: [TimeSeriesPoint!]!
+}
+
+enum AggregationPeriod {
+  HOURLY
+  DAILY
+  MONTHLY
+}

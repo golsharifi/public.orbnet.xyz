@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="footer">
+    <!--[if mso]>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td style="padding: 0;">
+    <![endif]-->
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top: 40px; border-top: 1px solid #e5e7eb;">
+        <tr>
+            <td style="padding: 32px 0 0 0;">
+                <!-- Support Links -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 24px;">
+                    <tr>
+                        <td align="center">
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <td style="padding: 0 12px;">
+                                        <a href="https://orbvpn.com/support"
+                                           style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #6366f1; text-decoration: none;"
+                                           th:text="#{email.footer.help}">Help Center</a>
+                                    </td>
+                                    <td style="padding: 0 12px; border-left: 1px solid #e5e7eb;">
+                                        <a href="mailto:support@orbvpn.com"
+                                           style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #6366f1; text-decoration: none;"
+                                           th:text="#{email.footer.contact}">Contact Us</a>
+                                    </td>
+                                    <td style="padding: 0 12px; border-left: 1px solid #e5e7eb;">
+                                        <a href="https://orbvpn.com/account"
+                                           style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #6366f1; text-decoration: none;"
+                                           th:text="#{email.footer.account}">My Account</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Company Info -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <tr>
+                        <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 12px; line-height: 20px; color: #9ca3af;">
+                            <p style="margin: 0 0 8px 0;">
+                                OrbVPN by ORB GLOBAL LTD
+                            </p>
+                            <p style="margin: 0 0 8px 0;">
+                                7 Bell Yard, London, WC2A 2JR, United Kingdom
+                            </p>
+                            <p style="margin: 0;">
+                                &copy; 2024 OrbVPN. All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- Unsubscribe Section -->
+                <table th:if="${unsubscribeUrl}" role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                    <tr>
+                        <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 11px; line-height: 18px; color: #9ca3af;">
+                            <p style="margin: 0;">
+                                <span th:text="#{email.footer.unsubscribe.text}">Don't want these emails?</span>
+                                <a th:href="${unsubscribeUrl}"
+                                   style="color: #6b7280; text-decoration: underline;"
+                                   th:text="#{email.footer.unsubscribe.link}">Unsubscribe</a>
+                                <span th:if="${preferencesUrl}">
+                                    <span style="margin: 0 4px;">|</span>
+                                    <a th:href="${preferencesUrl}"
+                                       style="color: #6b7280; text-decoration: underline;"
+                                       th:text="#{email.footer.preferences.link}">Manage Preferences</a>
+                                </span>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <!--[if mso]>
+    </td></tr></table>
+    <![endif]-->
+</div>
+</body>
+</html>
