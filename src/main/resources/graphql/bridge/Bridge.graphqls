@@ -1,0 +1,115 @@
+# Bridge Feature GraphQL Schema
+# Enables multi-hop VPN connections through bridge servers for censorship evasion
+
+type BridgeServer {
+  id: ID!
+  name: String!
+  location: String
+  country: String!
+  countryCode: String!
+  ipAddress: String!
+  port: Int
+  protocols: [String!]!
+  online: Boolean!
+  load: Float
+  latencyMs: Int
+  priority: Int
+  maxSessions: Int
+}
+
+type BridgeSettings {
+  enabled: Boolean!
+  selectedBridgeId: ID
+  autoSelect: Boolean!
+  lastUsedBridgeId: ID
+}
+
+type BridgeConnection {
+  bridgeServerId: ID!
+  exitServerId: ID!
+  protocol: String!
+  status: String!
+  connectedAt: DateTime
+  disconnectedAt: DateTime
+  bytesSent: Long
+  bytesReceived: Long
+  sessionDurationSeconds: Int
+}
+
+type BridgeConnectionStats {
+  totalConnections: Long!
+  totalBytesSent: Long!
+  totalBytesReceived: Long!
+  averageSessionDurationSeconds: Long
+}
+
+type BridgeConnectionPage {
+  content: [BridgeConnection!]!
+  totalElements: Long!
+  totalPages: Int!
+  number: Int!
+  size: Int!
+}
+
+# Input types
+input BridgeConnectionInput {
+  bridgeServerId: ID!
+  exitServerId: ID!
+  protocol: String!
+}
+
+input BridgeDisconnectionInput {
+  connectionId: ID!
+  bytesSent: Long
+  bytesReceived: Long
+}
+
+# Extend Query type
+extend type Query {
+  # Get all available bridge servers
+  getBridgeServers: [BridgeServer!]!
+
+  # Get bridge servers by country
+  getBridgeServersByCountry(countryCode: String!): [BridgeServer!]!
+
+  # Get recommended bridge server based on user location and load
+  getRecommendedBridge: BridgeServer
+
+  # Get current user's bridge settings
+  getBridgeSettings: BridgeSettings!
+
+  # Check if bridge is needed for connecting to a specific exit server
+  checkBridgeNeeded(exitServerId: ID!): Boolean!
+
+  # Get bridge connection history (paginated)
+  getBridgeConnectionHistory(page: Int = 0, size: Int = 20): BridgeConnectionPage!
+
+  # Get bridge connection history by date range
+  getBridgeConnectionHistoryByDateRange(
+    startDate: DateTime!
+    endDate: DateTime!
+    page: Int = 0
+    size: Int = 20
+  ): BridgeConnectionPage!
+
+  # Get bridge connection stats for current user
+  getBridgeConnectionStats: BridgeConnectionStats!
+}
+
+# Extend Mutation type
+extend type Mutation {
+  # Enable or disable bridge for current user
+  setBridgeEnabled(enabled: Boolean!): BridgeSettings!
+
+  # Select a specific bridge server (null to clear selection)
+  selectBridge(bridgeId: ID): BridgeSettings!
+
+  # Enable or disable auto-selection of bridge
+  setAutoBridge(enabled: Boolean!): BridgeSettings!
+
+  # Log a bridge connection (called by app when connecting)
+  logBridgeConnection(input: BridgeConnectionInput!): BridgeConnection!
+
+  # Log bridge disconnection (called by app when disconnecting)
+  logBridgeDisconnection(input: BridgeDisconnectionInput!): BridgeConnection!
+}

@@ -1,0 +1,88 @@
+enum PaymentCategory {
+  GROUP
+  MORE_LOGIN
+}
+
+input StripeCreatePaymentIntent {
+  tokenId: String!
+  groupId: Int!
+}
+
+type StripeCreatePaymentIntentResponse {
+  clientSecret: String
+}
+
+type CoinPaymentResponse {
+  id: Int
+  error: String
+  address: String
+  amount: String
+  txn_id: String
+  confirms_needed: String
+  timeout: Int
+  checkout_url: String
+  status_url: String
+  qrcode_url: String
+}
+
+type PaypalCreatePaymentResponse {
+  orderId: String
+}
+
+type PaypalApprovePaymentResponse {
+  success: Boolean
+  errorMessage: String
+}
+
+type ParspalCreatePaymentResponse {
+  payment_id: String
+  link: String
+  status: String
+  message: String
+  error_type: String
+  error_code: String
+}
+
+type AddressResult {
+  address: String
+  pubkey: String
+  dest_tag: Int
+}
+
+type AddressResponse {
+  error: String
+  result: AddressResult
+}
+
+# NOWPayments response type (replacement for CoinPayments)
+type NowPaymentResponse {
+  id: Int
+  paymentId: String
+  status: String
+  payAddress: String
+  payAmount: Float
+  payCurrency: String
+  priceAmount: Float
+  priceCurrency: String
+  orderId: String
+  expiresAt: String
+  error: String
+  network: String
+  payinExtraId: String
+}
+
+type PaymentResponse {
+  paymentId: String
+  clientSecret: String
+  checkoutUrl: String
+  status: String
+  message: String
+  requiresAction: Boolean
+  success: Boolean
+  mobileProductId: String
+  subscriptionId: String
+  amount: Float
+  currency: String
+  gatewayReference: String
+  qrcodeUrl: String
+}

@@ -1,0 +1,17 @@
+package com.orbvpn.api.domain.dto.staticip;
+
+import com.orbvpn.api.domain.entity.StaticIPAllocation;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class StaticIPAllocationResponse {
+    private boolean success;
+    private String message;
+    private StaticIPAllocation allocation;
+}

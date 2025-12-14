@@ -1,0 +1,216 @@
+# ========== NETWORK SCANNER TYPES ==========
+
+enum NetworkScanType {
+  QUICK
+  NORMAL
+  DEEP
+}
+
+enum NetworkScanStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum DeviceType {
+  UNKNOWN
+  ROUTER
+  COMPUTER
+  PHONE
+  TABLET
+  TV
+  IOT
+  PRINTER
+  CAMERA
+  NAS
+  GAME_CONSOLE
+  SMART_SPEAKER
+  STREAMING_BOX
+  SERVER
+  NETWORK_DEVICE
+  WEARABLE
+}
+
+# ========== NETWORK SCAN ==========
+
+type NetworkScan {
+  id: ID!
+  scanId: String!
+  networkCidr: String!
+  gatewayIp: String
+  scanType: NetworkScanType!
+  status: NetworkScanStatus!
+  totalDevices: Int!
+  onlineDevices: Int!
+  vulnerableDevices: Int!
+  securityScore: Int
+  securityGrade: String
+  devices: [DiscoveredDevice!]!
+  errorMessage: String
+  durationMs: Int
+  createdAt: LocalDateTime!
+  startedAt: LocalDateTime
+  completedAt: LocalDateTime
+}
+
+# ========== DISCOVERED DEVICE ==========
+
+type DiscoveredDevice {
+  id: ID!
+  ipAddress: String!
+  macAddress: String
+  hostname: String
+  vendor: String
+  deviceType: DeviceType!
+  customName: String
+  customIcon: String
+  isOnline: Boolean!
+  responseTimeMs: Int
+  openPorts: [PortInfo!]
+  openPortCount: Int
+  vulnerabilityCount: Int
+  securityRiskLevel: String
+  isGateway: Boolean!
+  osFingerprint: String
+  lastSeenAt: LocalDateTime
+  firstSeenAt: LocalDateTime
+  displayName: String!
+}
+
+# ========== PORT INFO ==========
+
+type PortInfo {
+  port: Int!
+  protocol: String!
+  service: String
+  state: String!
+}
+
+# ========== SECURITY SCORE ==========
+
+type SecurityScore {
+  score: Int!
+  grade: String!
+  vulnerableDevices: Int!
+  recommendations: [SecurityRecommendation!]!
+  lastUpdated: LocalDateTime!
+}
+
+type SecurityRecommendation {
+  severity: String!
+  title: String!
+  description: String!
+  affectedDevices: [String!]
+}
+
+# ========== INPUT TYPES ==========
+
+input StartScanInput {
+  networkCidr: String!
+  scanType: NetworkScanType = NORMAL
+}
+
+input UpdateDeviceInput {
+  deviceId: ID!
+  customName: String
+  customIcon: String
+}
+
+# ========== RESPONSE TYPES ==========
+
+type ScanResponse {
+  success: Boolean!
+  message: String
+  scan: NetworkScan
+}
+
+type DeviceResponse {
+  success: Boolean!
+  message: String
+  device: DiscoveredDevice
+}
+
+# ========== NETWORK SCANNER DASHBOARD ==========
+
+type ScannerDashboard {
+  latestScan: NetworkScan
+  recentScans: [NetworkScan!]!
+  knownDevices: Int!
+  currentSecurityScore: SecurityScore
+  hasActiveSubscription: Boolean!
+}
+
+# ========== PAGINATED TYPES ==========
+
+type NetworkScanPage {
+  content: [NetworkScan!]!
+  totalElements: Int!
+  totalPages: Int!
+  number: Int!
+  size: Int!
+}
+
+type DiscoveredDevicePage {
+  content: [DiscoveredDevice!]!
+  totalElements: Int!
+  totalPages: Int!
+  number: Int!
+  size: Int!
+}
+
+# ========== ADMIN TYPES ==========
+
+type ScannerAdminStats {
+  totalScans: Int!
+  scansToday: Int!
+  scansThisWeek: Int!
+  averageSecurityScore: Float
+  gradeDistribution: [GradeCount!]!
+  deviceTypeDistribution: [DeviceTypeCount!]!
+  topVendors: [VendorCount!]!
+}
+
+type GradeCount {
+  grade: String!
+  count: Int!
+}
+
+type DeviceTypeCount {
+  deviceType: DeviceType!
+  count: Int!
+}
+
+type VendorCount {
+  vendor: String!
+  count: Int!
+}
+
+# ========== QUERIES ==========
+
+extend type Query {
+  # User queries
+  scannerDashboard: ScannerDashboard!
+  networkScan(scanId: String!): NetworkScan
+  myScanHistory(page: Int = 0, size: Int = 10): NetworkScanPage!
+  scanDevices(scanId: String!): [DiscoveredDevice!]!
+  myDevices(page: Int = 0, size: Int = 20): DiscoveredDevicePage!
+  mySecurityScore: SecurityScore
+
+  # Admin queries
+  adminScannerStats: ScannerAdminStats!
+  adminAllScans(page: Int = 0, size: Int = 20, status: NetworkScanStatus): NetworkScanPage!
+}
+
+# ========== MUTATIONS ==========
+
+extend type Mutation {
+  # User mutations
+  startNetworkScan(input: StartScanInput!): ScanResponse!
+  cancelNetworkScan(scanId: String!): ScanResponse!
+  updateDevice(input: UpdateDeviceInput!): DeviceResponse!
+
+  # Admin mutations
+  adminCancelScan(scanId: String!): ScanResponse!
+}

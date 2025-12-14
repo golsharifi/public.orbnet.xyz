@@ -1,0 +1,139 @@
+# ========== PASSKEY / WEBAUTHN TYPES ==========
+
+type PasskeyView {
+    id: ID!
+    credentialId: String!
+    name: String!
+    deviceType: String
+    backedUp: Boolean
+    transports: [String!]
+    lastUsedAt: String
+    createdAt: String!
+}
+
+type PasskeyRegistrationOptions {
+    challenge: String!
+    rp: RelyingParty!
+    user: PasskeyUserInfo!
+    pubKeyCredParams: [PubKeyCredParam!]!
+    timeout: Int!
+    attestation: String!
+    authenticatorSelection: AuthenticatorSelection!
+    excludeCredentials: [ExcludeCredential!]
+}
+
+type RelyingParty {
+    id: String!
+    name: String!
+}
+
+type PasskeyUserInfo {
+    id: String!
+    name: String!
+    displayName: String!
+}
+
+type PubKeyCredParam {
+    type: String!
+    alg: Int!
+}
+
+type AuthenticatorSelection {
+    authenticatorAttachment: String
+    requireResidentKey: Boolean
+    residentKey: String
+    userVerification: String
+}
+
+type ExcludeCredential {
+    id: String!
+    type: String!
+    transports: [String!]
+}
+
+type PasskeyAuthenticationOptions {
+    challenge: String!
+    timeout: Int!
+    rpId: String!
+    allowCredentials: [AllowCredential!]
+    userVerification: String!
+}
+
+type AllowCredential {
+    id: String!
+    type: String!
+    transports: [String!]
+}
+
+type PasskeyAuthenticationResult {
+    accessToken: String!
+    refreshToken: String
+    user: UserView!
+}
+
+# ========== INPUT TYPES ==========
+
+input PasskeyRegistrationInput {
+    id: String!
+    rawId: String!
+    type: String!
+    response: AuthenticatorAttestationResponseInput!
+    authenticatorAttachment: String
+    passkeyName: String!
+}
+
+input AuthenticatorAttestationResponseInput {
+    clientDataJSON: String!
+    attestationObject: String!
+    transports: [String!]
+}
+
+input PasskeyAuthenticationInput {
+    id: String!
+    rawId: String!
+    type: String!
+    response: AuthenticatorAssertionResponseInput!
+    authenticatorAttachment: String
+}
+
+input AuthenticatorAssertionResponseInput {
+    clientDataJSON: String!
+    authenticatorData: String!
+    signature: String!
+    userHandle: String
+}
+
+# ========== EXTEND QUERY ==========
+
+extend type Query {
+    # Get passkey registration options for current user
+    passkeyRegistrationOptions(passkeyName: String!): PasskeyRegistrationOptions!
+
+    # Get passkey authentication options by email
+    passkeyAuthenticationOptions(email: String): PasskeyAuthenticationOptions!
+
+    # Get all passkeys for current user
+    myPasskeys: [PasskeyView!]!
+
+    # Admin: Get passkeys for a specific user
+    userPasskeys(userId: Int!): [PasskeyView!]!
+}
+
+# ========== EXTEND MUTATION ==========
+
+extend type Mutation {
+    # Register a new passkey for current user
+    registerPasskey(input: PasskeyRegistrationInput!): PasskeyView!
+
+    # Authenticate with passkey (returns JWT token)
+    authenticateWithPasskey(input: PasskeyAuthenticationInput!): PasskeyAuthenticationResult!
+
+    # Delete a passkey
+    deletePasskey(id: ID!): Boolean!
+
+    # Rename a passkey
+    renamePasskey(id: ID!, name: String!): PasskeyView!
+
+    # Admin: Delete a user's passkey
+    deleteUserPasskey(userId: Int!, passkeyId: ID!): Boolean!
+}

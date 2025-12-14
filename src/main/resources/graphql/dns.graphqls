@@ -1,0 +1,279 @@
+# DNS Smart Proxy GraphQL Schema
+# Provides geo-unblocking for streaming services and reverse access for Regional services
+
+# ============================================================================
+# TYPES
+# ============================================================================
+
+type DnsService {
+  id: String!
+  name: String!
+  icon: String
+  description: String
+  category: String!
+  categoryName: String
+  domains: [String!]!
+  regions: [String!]!
+  enabled: Boolean!
+  popular: Boolean!
+}
+
+type DnsServiceCategory {
+  id: String!
+  name: String!
+  icon: String
+  description: String
+  services: [DnsService!]!
+}
+
+type DnsRegionalService {
+  id: String!
+  name: String!
+  icon: String
+  description: String
+  category: String!
+  categoryName: String
+  domains: [String!]!
+  requiresIranIp: Boolean!
+  enabled: Boolean!
+}
+
+type DnsRegionalCategory {
+  id: String!
+  name: String!
+  icon: String
+  description: String
+  services: [DnsRegionalService!]!
+}
+
+type DnsUserRule {
+  id: ID!
+  userId: Int!
+  serviceId: String!
+  serviceName: String
+  serviceType: DnsServiceType!
+  enabled: Boolean!
+  preferredRegion: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type DnsWhitelistedIp {
+  id: ID!
+  userId: Int!
+  ipAddress: String!
+  label: String
+  deviceType: String
+  active: Boolean!
+  lastUsed: String
+  createdAt: String!
+  expiresAt: String
+}
+
+type DnsRegionalServer {
+  code: String!
+  name: String!
+  location: String!
+  ipv4: String
+  ipv6: String
+  healthy: Boolean!
+  latency: Int
+  priority: Int!
+}
+
+type DnsConfig {
+  enabled: Boolean!
+  primaryDns: String!
+  secondaryDns: String
+  dohEnabled: Boolean!
+  dohEndpoint: String
+  sniProxyEnabled: Boolean!
+  maxWhitelistedIps: Int!
+  whitelistExpiryDays: Int!
+}
+
+type DnsStats {
+  totalQueries: Long!
+  blockedQueries: Long!
+  proxiedQueries: Long!
+  cacheHits: Long!
+  cacheMisses: Long!
+  averageLatencyMs: Float!
+  topServices: [DnsServiceStat!]!
+  topRegions: [DnsRegionStat!]!
+  queriesByHour: [DnsHourlyStat!]!
+}
+
+type DnsServiceStat {
+  serviceId: String!
+  serviceName: String!
+  queryCount: Long!
+  lastQueried: String
+}
+
+type DnsRegionStat {
+  region: String!
+  queryCount: Long!
+}
+
+type DnsHourlyStat {
+  hour: Int!
+  queryCount: Long!
+}
+
+type DnsUserStats {
+  userId: Int!
+  totalQueries: Long!
+  proxiedQueries: Long!
+  enabledServices: Int!
+  whitelistedIps: Int!
+  lastActivity: String
+}
+
+# Admin types
+type DnsAdminStats {
+  totalUsers: Int!
+  activeUsers: Int!
+  totalQueries: Long!
+  dailyQueries: Long!
+  popularServices: [DnsServiceStat!]!
+  regionDistribution: [DnsRegionStat!]!
+  serverHealth: [DnsRegionalServer!]!
+}
+
+type DnsUserOverview {
+  userId: Int!
+  username: String!
+  email: String!
+  enabledServicesCount: Int!
+  whitelistedIpsCount: Int!
+  totalQueries: Long!
+  lastActivity: String
+  subscription: String
+}
+
+# ============================================================================
+# ENUMS
+# ============================================================================
+
+enum DnsServiceType {
+  STREAMING
+  REGIONAL
+}
+
+# ============================================================================
+# INPUTS
+# ============================================================================
+
+input DnsServiceRuleInput {
+  serviceId: String!
+  serviceType: DnsServiceType!
+  enabled: Boolean!
+  preferredRegion: String
+}
+
+input DnsWhitelistIpInput {
+  ipAddress: String!
+  label: String
+  deviceType: String
+  expiryDays: Int
+}
+
+input DnsAdminUserRuleInput {
+  userId: Int!
+  serviceId: String!
+  serviceType: DnsServiceType!
+  enabled: Boolean!
+  preferredRegion: String
+}
+
+input DnsAdminWhitelistInput {
+  userId: Int!
+  ipAddress: String!
+  label: String
+  deviceType: String
+  expiryDays: Int
+}
+
+# ============================================================================
+# QUERIES
+# ============================================================================
+
+extend type Query {
+  # User queries - streaming services
+  dnsServices: [DnsServiceCategory!]!
+  dnsServicesByRegion(region: String!): [DnsService!]!
+  dnsPopularServices: [DnsService!]!
+  dnsSearchServices(query: String!): [DnsService!]!
+
+  # User queries - Regional services
+  dnsRegionalServices: [DnsRegionalCategory!]!
+  dnsRegionalServicesByCategory(categoryId: String!): [DnsRegionalService!]!
+
+  # User queries - rules and whitelist
+  myDnsRules: [DnsUserRule!]!
+  myDnsRule(serviceId: String!, serviceType: DnsServiceType!): DnsUserRule
+  myWhitelistedIps: [DnsWhitelistedIp!]!
+
+  # User queries - config and stats
+  dnsConfig: DnsConfig!
+  dnsRegionalServers: [DnsRegionalServer!]!
+  myDnsStats: DnsUserStats!
+
+  # Admin queries
+  dnsAdminStats: DnsAdminStats!
+  dnsAdminUserOverview(limit: Int, offset: Int): [DnsUserOverview!]!
+  dnsAdminUserRules(userId: Int!): [DnsUserRule!]!
+  dnsAdminUserWhitelist(userId: Int!): [DnsWhitelistedIp!]!
+  dnsAdminServerHealth: [DnsRegionalServer!]!
+  dnsAdminQueryLogs(limit: Int, serviceId: String, region: String): [DnsQueryLog!]!
+}
+
+type DnsQueryLog {
+  id: ID!
+  userId: Int
+  domain: String!
+  serviceId: String
+  region: String
+  responseType: String!
+  latencyMs: Int!
+  timestamp: String!
+}
+
+# ============================================================================
+# MUTATIONS
+# ============================================================================
+
+extend type Mutation {
+  # User mutations - service rules
+  setDnsServiceRule(input: DnsServiceRuleInput!): DnsUserRule!
+  removeDnsServiceRule(serviceId: String!, serviceType: DnsServiceType!): Boolean!
+  enableAllDnsServices(serviceType: DnsServiceType!): Int!
+  disableAllDnsServices(serviceType: DnsServiceType!): Int!
+  resetDnsRulesToDefault: Boolean!
+
+  # User mutations - IP whitelist
+  whitelistDnsIp(input: DnsWhitelistIpInput!): DnsWhitelistedIp!
+  updateWhitelistedIp(id: ID!, label: String, active: Boolean): DnsWhitelistedIp!
+  removeWhitelistedIp(id: ID!): Boolean!
+  whitelistCurrentIp(label: String, deviceType: String): DnsWhitelistedIp!
+
+  # User mutations - quick actions
+  enableDns: Boolean!
+  disableDns: Boolean!
+
+  # Admin mutations
+  adminSetDnsUserRule(input: DnsAdminUserRuleInput!): DnsUserRule!
+  adminRemoveDnsUserRule(userId: Int!, serviceId: String!, serviceType: DnsServiceType!): Boolean!
+  adminWhitelistUserIp(input: DnsAdminWhitelistInput!): DnsWhitelistedIp!
+  adminRemoveUserWhitelistedIp(userId: Int!, ipId: ID!): Boolean!
+  adminRefreshServerHealth: [DnsRegionalServer!]!
+  adminPurgeDnsCache: Boolean!
+  adminUpdateDnsConfig(
+    enabled: Boolean,
+    dohEnabled: Boolean,
+    sniProxyEnabled: Boolean,
+    maxWhitelistedIps: Int,
+    whitelistExpiryDays: Int
+  ): DnsConfig!
+}

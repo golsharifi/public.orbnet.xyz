@@ -1,0 +1,49 @@
+type NetworkOverview {
+  totalActiveConnections: Int!
+  totalServers: Int!
+  activeServers: Int!
+  totalDataTransferred: Float!
+  averageNetworkUtilization: Float!
+  connectionsByRegion: JSON!
+}
+
+type ServerStatus {
+  serverId: ID!
+  serverName: String!
+  location: String!
+  activeConnections: Int!
+  cpuUsage: Float!
+  memoryUsage: Float!
+  networkUtilization: Float!
+  tokenEarnings: Float!
+}
+
+type UserActivity {
+  userId: ID!
+  username: String!
+  activeConnections: Int!
+  dataTransferred: Float!
+  tokensSpent: Float!
+  lastActive: DateTime!
+}
+
+type TokenMetrics {
+  totalTokensInCirculation: Float!
+  totalTokensEarned: Float!
+  totalTokensSpent: Float!
+  averageDailyVolume: Float!
+  recentActivity: [TokenActivityPoint!]!
+}
+
+type TokenActivityPoint {
+  timestamp: DateTime!
+  earned: Float!
+  spent: Float!
+}
+
+type AdminDashboardView {
+  networkOverview: NetworkOverview!
+  topServers: [ServerStatus!]!
+  topUsers: [UserActivity!]!
+  tokenMetrics: TokenMetrics!
+}

@@ -1,0 +1,93 @@
+<th:block th:fragment="dark-mode">
+    <style>
+        @media (prefers-color-scheme: dark) {
+            /* Base dark mode styles */
+            body {
+                background-color: #1a1a1a !important;
+                color: #ffffff !important;
+            }
+
+            .email-container {
+                background-color: #2d2d2d !important;
+            }
+
+            /* Typography dark mode */
+            .heading-1, .heading-2, .heading-3 {
+                color: #ffffff !important;
+            }
+
+            .text-base {
+                color: #f5f5f5 !important;
+            }
+
+            .text-sm, .text-xs {
+                color: #cccccc !important;
+            }
+
+            /* Components dark mode */
+            .card {
+                background-color: #363636 !important;
+            }
+
+            .details-container {
+                background-color: #363636 !important;
+                border-color: #4a4a4a !important;
+            }
+
+            .details-row {
+                background-color: #2d2d2d !important;
+            }
+
+            .details-label {
+                color: #cccccc !important;
+            }
+
+            .details-value {
+                color: #ffffff !important;
+            }
+
+            /* Button dark mode */
+            .button {
+                background-color: #0052FF !important;
+                color: #ffffff !important;
+            }
+
+            /* Notice components dark mode */
+            .notice-info {
+                background-color: #1a365d !important;
+                color: #90caf9 !important;
+            }
+
+            .notice-warning {
+                background-color: #3d2c1f !important;
+                color: #ffb74d !important;
+            }
+
+            .notice-success {
+                background-color: #1b3329 !important;
+                color: #81c784 !important;
+            }
+
+            .notice-error {
+                background-color: #3d1f1f !important;
+                color: #ef5350 !important;
+            }
+
+            /* Links dark mode */
+            .link {
+                color: #90caf9 !important;
+            }
+
+            /* Support section dark mode */
+            .support-section {
+                background-color: #363636 !important;
+            }
+
+            .support-link {
+                background-color: #2d2d2d !important;
+                border-color: #4a4a4a !important;
+                color: #90caf9 !important;
+            }
+        }
+    </style>
+</th:block>
