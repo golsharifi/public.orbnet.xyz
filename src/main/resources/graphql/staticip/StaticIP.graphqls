@@ -1,0 +1,232 @@
+# ========== STATIC IP TYPES ==========
+
+enum StaticIPPlanType {
+  PERSONAL
+  PRO
+  MULTI_REGION
+  BUSINESS
+  ENTERPRISE
+}
+
+enum StaticIPAllocationStatus {
+  PENDING
+  CONFIGURING
+  ACTIVE
+  SUSPENDED
+  RELEASED
+}
+
+enum PortForwardProtocol {
+  TCP
+  UDP
+  BOTH
+}
+
+enum PortForwardStatus {
+  PENDING
+  CONFIGURING
+  ACTIVE
+  DISABLED
+  ERROR
+  DELETED
+}
+
+enum PortForwardAddonType {
+  BASIC
+  STANDARD
+  ADVANCED
+  POWER
+}
+
+# ========== STATIC IP PLAN ==========
+
+type StaticIPPlan {
+  planType: StaticIPPlanType!
+  name: String!
+  priceMonthly: Float!
+  regionsIncluded: Int!
+  portForwardsPerRegion: Int!
+  description: String
+}
+
+# ========== STATIC IP SUBSCRIPTION ==========
+
+type StaticIPSubscription {
+  id: ID!
+  planType: StaticIPPlanType!
+  status: String!
+  priceMonthly: Float!
+  regionsIncluded: Int!
+  regionsUsed: Int!
+  portForwardsPerRegion: Int!
+  autoRenew: Boolean!
+  startedAt: LocalDateTime!
+  expiresAt: LocalDateTime
+  cancelledAt: LocalDateTime
+}
+
+# ========== STATIC IP ALLOCATION ==========
+
+type StaticIPAllocation {
+  id: ID!
+  region: String!
+  publicIp: String!
+  status: StaticIPAllocationStatus!
+  portForwardsIncluded: Int!
+  portForwardsUsed: Int!
+  portForwardsFromAddons: Int!
+  allocatedAt: LocalDateTime!
+  configuredAt: LocalDateTime
+  portForwardRules: [PortForwardRule!]!
+  portForwardLimits: PortForwardLimits!
+}
+
+# ========== PORT FORWARD RULE ==========
+
+type PortForwardRule {
+  id: ID!
+  externalPort: Int!
+  internalPort: Int!
+  protocol: PortForwardProtocol!
+  status: PortForwardStatus!
+  description: String
+  enabled: Boolean!
+  isFromAddon: Boolean!
+  createdAt: LocalDateTime!
+  configuredAt: LocalDateTime
+  lastError: String
+}
+
+# ========== PORT FORWARD LIMITS ==========
+
+type PortForwardLimits {
+  includedTotal: Int!
+  includedUsed: Int!
+  addonTotal: Int!
+  addonUsed: Int!
+  totalAvailable: Int!
+}
+
+# ========== PORT FORWARD ADDON ==========
+
+type PortForwardAddon {
+  id: ID!
+  addonType: PortForwardAddonType!
+  extraPorts: Int!
+  portsUsed: Int!
+  priceMonthly: Float!
+  status: String!
+  autoRenew: Boolean!
+  startedAt: LocalDateTime!
+  expiresAt: LocalDateTime
+}
+
+type PortForwardAddonPlan {
+  addonType: PortForwardAddonType!
+  name: String!
+  ports: Int!
+  priceMonthly: Float!
+}
+
+# ========== REGION AVAILABILITY ==========
+
+type RegionAvailability {
+  region: String!
+  displayName: String!
+  countryCode: String!
+  availableCount: Int!
+  hasCapacity: Boolean!
+  latencyMs: Int
+}
+
+# ========== INPUT TYPES ==========
+
+input CreateStaticIPSubscriptionInput {
+  planType: StaticIPPlanType!
+  paymentMethod: String!
+  selectedCoin: String
+  autoRenew: Boolean = true
+}
+
+input AllocateStaticIPInput {
+  region: String!
+}
+
+input CreatePortForwardInput {
+  allocationId: ID!
+  externalPort: Int!
+  internalPort: Int!
+  protocol: PortForwardProtocol!
+  description: String
+}
+
+input PurchasePortForwardAddonInput {
+  allocationId: ID!
+  addonType: PortForwardAddonType!
+  paymentMethod: String!
+  selectedCoin: String
+}
+
+# ========== RESPONSE TYPES ==========
+
+type StaticIPSubscriptionResponse {
+  success: Boolean!
+  message: String
+  subscription: StaticIPSubscription
+  paymentUrl: String
+  mobileProductId: String  # Product ID for in-app purchase (iOS/Android)
+}
+
+type StaticIPAllocationResponse {
+  success: Boolean!
+  message: String
+  allocation: StaticIPAllocation
+}
+
+type PortForwardResponse {
+  success: Boolean!
+  message: String
+  rule: PortForwardRule
+}
+
+type PortForwardAddonResponse {
+  success: Boolean!
+  message: String
+  addon: PortForwardAddon
+  paymentUrl: String
+}
+
+# ========== STATIC IP DASHBOARD ==========
+
+type StaticIPDashboard {
+  subscription: StaticIPSubscription
+  allocations: [StaticIPAllocation!]!
+  availablePlans: [StaticIPPlan!]!
+  availableRegions: [RegionAvailability!]!
+  addonPlans: [PortForwardAddonPlan!]!
+}
+
+# ========== ADMIN TYPES ==========
+
+type StaticIPPoolStats {
+  region: String!
+  totalIPs: Int!
+  allocatedIPs: Int!
+  availableIPs: Int!
+}
+
+type StaticIPAdminStats {
+  totalSubscriptions: Int!
+  activeSubscriptions: Int!
+  totalAllocations: Int!
+  activeAllocations: Int!
+  totalRevenue: Float!
+  poolStats: [StaticIPPoolStats!]!
+  subscriptionsByPlan: [PlanStats!]!
+}
+
+type PlanStats {
+  planType: StaticIPPlanType!
+  count: Int!
+  revenue: Float!
+}

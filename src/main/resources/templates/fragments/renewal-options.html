@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="options">
+    <style>
+        /* Contact Options Styles */
+        .renewal-options {
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        .contact-message {
+            color: #666666;
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .contact-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contact-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #333333;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .contact-button:hover {
+            background-color: #f5f5f5;
+        }
+
+        .contact-icon {
+            font-size: 20px;
+            margin-right: 12px;
+        }
+
+        [dir="rtl"] .contact-icon {
+            margin-right: 0;
+            margin-left: 12px;
+        }
+
+        .whatsapp-button {
+            color: #25D366;
+            border-color: #25D366;
+        }
+
+        .telegram-button {
+            color: #0088cc;
+            border-color: #0088cc;
+        }
+
+        .email-option {
+            margin-top: 16px;
+            text-align: center;
+            color: #666666;
+        }
+
+        .email-link {
+            color: #0052FF;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .email-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            .contact-message {
+                color: #cccccc;
+            }
+
+            .contact-button {
+                background-color: #333333;
+                border-color: #404040;
+                color: #ffffff;
+            }
+
+            .contact-button:hover {
+                background-color: #404040;
+            }
+
+            .email-option {
+                color: #999999;
+            }
+
+            .email-link {
+                color: #64b5f6;
+            }
+        }
+    </style>
+
+    <div class="renewal-options">
+        <div class="contact-message" th:text="#{email.renewal.contact}">
+            To renew, please contact us through one of the following options:
+        </div>
+
+        <div class="contact-options">
+            <a href="https://wa.me/message/3NYJBB6MNCQPM1" class="contact-button whatsapp-button">
+                <span class="contact-icon">💬</span>
+                WhatsApp
+            </a>
+
+            <a href="https://t.me/OrbVPN1" class="contact-button telegram-button">
+                <span class="contact-icon">✈️</span>
+                Telegram
+            </a>
+        </div>
+
+        <div class="email-option">
+            <span th:text="#{email.renewal.email.prefix}">or</span>
+            <a th:href="${mailtoLink}"
+               class="email-link"
+               th:text="#{email.renewal.email.link}">email us</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

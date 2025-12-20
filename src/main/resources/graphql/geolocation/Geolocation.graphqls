@@ -1,0 +1,7 @@
+type GeolocationView {
+    id: Int,
+    name: String,
+    code: String,
+    threeCharCode: String,
+    geoDiscount: Int
+}

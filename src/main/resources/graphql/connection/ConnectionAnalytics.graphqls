@@ -1,0 +1,29 @@
+type NetworkAnalytics {
+  totalActiveConnections: Int!
+  totalUsers: Int!
+  totalServers: Int!
+  totalDataTransferred: Float!
+  connectionsPerServer: JSON!
+  dataPerServer: JSON!
+  topPerformingServers: [ServerPerformanceMetrics!]!
+  mostActiveUsers: [UserActivityMetrics!]!
+}
+
+type ServerPerformanceMetrics {
+  serverId: ID!
+  serverName: String!
+  averageCpuUsage: Float!
+  averageMemoryUsage: Float!
+  averageNetworkSpeed: Float!
+  activeConnections: Int!
+  totalDataTransferred: Float!
+}
+
+type UserActivityMetrics {
+  userId: ID!
+  username: String!
+  totalConnections: Int!
+  activeConnections: Int!
+  totalDataTransferred: Float!
+  averageSessionDuration: Float!
+}

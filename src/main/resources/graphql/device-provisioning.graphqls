@@ -1,0 +1,176 @@
+# ========== DEVICE PROVISIONING SCHEMA ==========
+# Secure device registration for OrbMesh consumer devices
+
+# Device provisioning status enum
+enum DeviceProvisioningStatus {
+  PENDING      # Created during manufacturing, not yet activated
+  ACTIVATED    # Successfully registered and active
+  REVOKED      # Revoked by admin (stolen, returned, security issue)
+  DEACTIVATED  # Deactivated but may be re-activated
+}
+
+# ========== TYPES ==========
+
+# Device identity view (for admin)
+type OrbMeshDeviceIdentityView {
+  id: ID!
+  deviceId: String!
+  deviceModel: String
+  manufacturingBatch: String
+  status: DeviceProvisioningStatus!
+  serverId: ID
+  serverName: String
+  ownerId: ID
+  ownerEmail: String
+  activationIp: String
+  detectedRegion: String
+  detectedCountry: String
+  failedAttempts: Int!
+  createdAt: String!
+  activatedAt: String
+  lastSeenAt: String
+  revokedAt: String
+  revocationReason: String
+}
+
+# Result of device registration (returned to device)
+type OrbMeshDeviceRegistrationResult {
+  success: Boolean!
+  message: String!
+  # Only populated on successful registration:
+  serverId: ID
+  serverName: String
+  apiKey: String
+  jwtSecret: String
+  region: String
+  # TLS Certificate (issued by OrbNet CA):
+  certificate: OrbMeshDeviceCertificate
+  # Configuration hints for the device:
+  dnsServers: [String!]
+  ntpServers: [String!]
+}
+
+# TLS Certificate issued by OrbNet CA
+type OrbMeshDeviceCertificate {
+  certificatePem: String!    # Device certificate (PEM format)
+  privateKeyPem: String!     # Device private key (PEM format) - KEEP SECRET
+  caCertificatePem: String!  # OrbNet CA certificate (for client verification)
+  serialNumber: String!      # Certificate serial number
+  validFrom: String!         # Certificate validity start (ISO 8601)
+  validUntil: String!        # Certificate validity end (ISO 8601)
+}
+
+# Result of generating device identities (manufacturing)
+type OrbMeshDeviceIdentityCreationResult {
+  deviceId: String!
+  deviceSecret: String!  # Only returned once during manufacturing!
+  identity: OrbMeshDeviceIdentityView!
+}
+
+# Batch generation result
+type OrbMeshDeviceBatchResult {
+  success: Boolean!
+  message: String!
+  count: Int!
+  batchId: String!
+  devices: [OrbMeshDeviceIdentityCreationResult!]!
+}
+
+# Device statistics
+type OrbMeshDeviceStats {
+  totalDevices: Int!
+  pendingDevices: Int!
+  activatedDevices: Int!
+  revokedDevices: Int!
+  devicesByModel: [DeviceModelStats!]!
+  devicesByCountry: [DeviceCountryStats!]!
+}
+
+type DeviceModelStats {
+  model: String!
+  total: Int!
+  activated: Int!
+  pending: Int!
+}
+
+type DeviceCountryStats {
+  country: String!
+  count: Int!
+}
+
+# ========== INPUT TYPES ==========
+
+# Input for device registration (from device)
+input OrbMeshDeviceRegistrationInput {
+  deviceId: String!
+  deviceSecret: String!
+  publicIp: String!
+  hardwareFingerprint: String
+  deviceName: String
+  # Optional hardware info for logging/analytics
+  cpuInfo: String
+  memoryMb: Int
+  diskGb: Int
+  osVersion: String
+}
+
+# Input for generating device batch (manufacturing)
+input OrbMeshDeviceBatchInput {
+  count: Int!
+  deviceModel: String!
+  manufacturingBatch: String!
+  hardwareFingerprints: [String!]
+}
+
+# Input for revoking a device
+input OrbMeshDeviceRevokeInput {
+  deviceId: String!
+  reason: String!
+}
+
+# ========== QUERIES (extend existing Query type) ==========
+
+extend type Query {
+  # Get device by ID (admin only)
+  getOrbMeshDevice(deviceId: String!): OrbMeshDeviceIdentityView
+
+  # Get devices by status (admin only)
+  getOrbMeshDevicesByStatus(status: DeviceProvisioningStatus!, page: Int, size: Int): [OrbMeshDeviceIdentityView!]!
+
+  # Get devices by manufacturing batch (admin only)
+  getOrbMeshDevicesByBatch(batch: String!): [OrbMeshDeviceIdentityView!]!
+
+  # Get device statistics (admin only)
+  getOrbMeshDeviceStats: OrbMeshDeviceStats!
+
+  # Search devices (admin only)
+  searchOrbMeshDevices(query: String!, page: Int, size: Int): [OrbMeshDeviceIdentityView!]!
+}
+
+# ========== MUTATIONS (extend existing Mutation type) ==========
+
+extend type Mutation {
+  # ========== DEVICE REGISTRATION (called by device) ==========
+
+  # Register a device (called by device on first boot)
+  # This is the ONLY unauthenticated device endpoint
+  # Security: Device must provide valid deviceId + deviceSecret
+  registerOrbMeshDevice(input: OrbMeshDeviceRegistrationInput!): OrbMeshDeviceRegistrationResult!
+
+  # ========== MANUFACTURING (admin only) ==========
+
+  # Generate a batch of device identities for manufacturing
+  # Returns device IDs and secrets that must be flashed to devices
+  generateOrbMeshDeviceBatch(input: OrbMeshDeviceBatchInput!): OrbMeshDeviceBatchResult!
+
+  # ========== DEVICE MANAGEMENT (admin only) ==========
+
+  # Revoke a device (marks as compromised, prevents operation)
+  revokeOrbMeshDevice(input: OrbMeshDeviceRevokeInput!): Boolean!
+
+  # Re-activate a deactivated device (not revoked)
+  reactivateOrbMeshDevice(deviceId: String!): OrbMeshDeviceIdentityView
+
+  # Transfer device ownership to a user
+  transferOrbMeshDeviceOwnership(deviceId: String!, newOwnerId: Int!): OrbMeshDeviceIdentityView
+}

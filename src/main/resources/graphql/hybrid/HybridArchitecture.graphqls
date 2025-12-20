@@ -1,0 +1,478 @@
+# ========== HYBRID ARCHITECTURE TYPES ==========
+# Supports Azure DC, Partner DC, and Home device deployments
+
+# ========== ENUMS ==========
+
+enum DeploymentType {
+  ORBVPN_DC
+  PARTNER_DC
+  HOME
+}
+
+enum PartnerTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum NodeStatus {
+  ONLINE
+  OFFLINE
+  DEGRADED
+  MAINTENANCE
+}
+
+enum EarningType {
+  BANDWIDTH
+  COMPUTE
+  UPTIME
+  REFERRAL
+  BONUS
+}
+
+enum EarningStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  CANCELLED
+}
+
+# ========== PARTNER TYPES ==========
+
+type OrbMeshPartner {
+  id: ID!
+  partnerUuid: String!
+  partnerName: String!
+  contactEmail: String!
+  contactPhone: String
+  companyName: String
+
+  # Tier and revenue
+  tier: PartnerTier!
+  revenueSharePercent: Float!
+  tokenBonusMultiplier: Float!
+
+  # Agreement
+  agreementSignedAt: LocalDateTime
+  agreementExpiresAt: LocalDateTime
+  isVerified: Boolean!
+  isActive: Boolean!
+
+  # Statistics
+  totalNodes: Int!
+  activeNodes: Int!
+  totalStaticIps: Int!
+  totalBandwidthServedGb: Float!
+  totalConnectionsServed: Long!
+  totalRevenueEarned: Float!
+  totalTokensEarned: Float!
+
+  # Relationships
+  nodes: [OrbMeshNode!]!
+
+  createdAt: LocalDateTime!
+  updatedAt: LocalDateTime!
+}
+
+type PartnerDashboard {
+  partner: OrbMeshPartner!
+  activeNodes: [OrbMeshNode!]!
+  recentEarnings: [TokenEarning!]!
+  pendingPayout: Float!
+  thisMonthRevenue: Float!
+  thisMonthBandwidthGb: Float!
+  uptimePercentage: Float!
+}
+
+# ========== NODE TYPES ==========
+
+type OrbMeshNode {
+  id: ID!
+  nodeUuid: String!
+  deploymentType: DeploymentType!
+
+  # Display
+  nodeName: String
+  nodeDescription: String
+
+  # Network
+  publicIp: String
+  localIp: String
+  ddnsHostname: String
+  region: String
+  countryCode: String
+  city: String
+
+  # Capabilities
+  hasStaticIp: Boolean!
+  hasIpv6: Boolean!
+  isBehindNat: Boolean!
+  isBehindCgnat: Boolean!
+  canReceiveIncoming: Boolean!
+  upnpAvailable: Boolean!
+
+  # Feature support
+  supportsStaticIp: Boolean!
+  supportsPortForward: Boolean!
+  supportsBridgeNode: Boolean!
+  supportsScanner: Boolean!
+  supportsAi: Boolean!
+  canEarnTokens: Boolean!
+
+  # Performance
+  uploadMbps: Int!
+  downloadMbps: Int!
+  maxConnections: Int!
+  currentConnections: Int!
+
+  # Hardware
+  cpuCores: Int!
+  ramTotalMb: Int!
+  ramAvailableMb: Int!
+  hasGpu: Boolean!
+  deviceType: String
+  osName: String
+  osArch: String
+
+  # Status
+  online: Boolean!
+  lastHeartbeat: LocalDateTime
+  uptimePercentage: Float!
+  healthScore: Int!
+
+  # Services
+  wireguardEnabled: Boolean!
+  wireguardHealthy: Boolean!
+  vlessEnabled: Boolean!
+  vlessHealthy: Boolean!
+  openconnectEnabled: Boolean!
+  openconnectHealthy: Boolean!
+
+  # Mining
+  isMiningEnabled: Boolean!
+  totalBandwidthServedGb: Float!
+  totalConnectionsServed: Long!
+  totalTokensEarned: Float!
+  tokenWalletAddress: String
+
+  # Ownership
+  ownerUser: UserView
+  partner: OrbMeshPartner
+
+  createdAt: LocalDateTime!
+  updatedAt: LocalDateTime!
+}
+
+type NodeCapabilities {
+  deploymentType: DeploymentType!
+  nodeUuid: String!
+  publicIp: String
+  hasStaticIp: Boolean!
+  isBehindCgnat: Boolean!
+  canReceiveIncoming: Boolean!
+  uploadMbps: Int!
+  downloadMbps: Int!
+  maxConnections: Int!
+  cpuCores: Int!
+  ramTotalMb: Int!
+  deviceType: String
+  supportsStaticIp: Boolean!
+  supportsPortForward: Boolean!
+  supportsBridgeNode: Boolean!
+  supportsScanner: Boolean!
+  supportsAi: Boolean!
+  canEarnTokens: Boolean!
+}
+
+# ========== TOKEN EARNING TYPES ==========
+
+type TokenEarning {
+  id: ID!
+  node: OrbMeshNode!
+  partner: OrbMeshPartner
+  user: UserView
+
+  earningType: EarningType!
+  amount: Float!
+  bandwidthGb: Float
+  computeUnits: Float
+
+  status: EarningStatus!
+  payoutTxHash: String
+
+  periodStart: LocalDateTime!
+  periodEnd: LocalDateTime!
+
+  createdAt: LocalDateTime!
+  confirmedAt: LocalDateTime
+  paidAt: LocalDateTime
+}
+
+type PartnerPayout {
+  id: ID!
+  partner: OrbMeshPartner!
+
+  amount: Float!
+  currency: String!
+  periodStart: LocalDateTime!
+  periodEnd: LocalDateTime!
+
+  bandwidthRevenue: Float!
+  staticIpRevenue: Float!
+  otherRevenue: Float!
+
+  status: EarningStatus!
+  paymentMethod: String
+  paymentReference: String
+
+  createdAt: LocalDateTime!
+  processedAt: LocalDateTime
+  completedAt: LocalDateTime
+}
+
+# ========== HOME DEVICE TYPES ==========
+
+type HomeDevice {
+  id: ID!
+  node: OrbMeshNode!
+  user: UserView!
+
+  setupCode: String
+  setupCompletedAt: LocalDateTime
+
+  # DDNS
+  ddnsEnabled: Boolean!
+  ddnsProvider: String
+  ddnsHostname: String
+  ddnsLastUpdate: LocalDateTime
+  ddnsLastIp: String
+
+  # Router config
+  upnpPortMapped: Boolean!
+  upnpExternalPort: Int
+  manualPortForwardInstructions: String
+
+  # Sharing
+  isPublic: Boolean!
+  maxGuestConnections: Int!
+
+  createdAt: LocalDateTime!
+  updatedAt: LocalDateTime!
+}
+
+# ========== INPUT TYPES ==========
+
+input RegisterPartnerInput {
+  partnerName: String!
+  contactEmail: String!
+  contactPhone: String
+  companyName: String
+}
+
+input UpdatePartnerInput {
+  partnerName: String
+  contactEmail: String
+  contactPhone: String
+  companyName: String
+}
+
+input RegisterNodeInput {
+  nodeUuid: String!
+  deploymentType: DeploymentType!
+  partnerId: ID
+  nodeName: String
+  region: String
+}
+
+input UpdateNodeCapabilitiesInput {
+  nodeUuid: String!
+  publicIp: String
+  localIp: String
+  hasStaticIp: Boolean
+  hasIpv6: Boolean
+  isBehindNat: Boolean
+  isBehindCgnat: Boolean
+  canReceiveIncoming: Boolean
+  upnpAvailable: Boolean
+  uploadMbps: Int
+  downloadMbps: Int
+  maxConnections: Int
+  cpuCores: Int
+  ramTotalMb: Int
+  ramAvailableMb: Int
+  hasGpu: Boolean
+  deviceType: String
+  osName: String
+  osArch: String
+  supportsStaticIp: Boolean
+  supportsPortForward: Boolean
+  supportsBridgeNode: Boolean
+  supportsScanner: Boolean
+  supportsAi: Boolean
+  canEarnTokens: Boolean
+}
+
+input NodeHeartbeatInput {
+  nodeUuid: String!
+  online: Boolean!
+  currentConnections: Int
+  cpuUsage: Float
+  memoryUsage: Float
+  wireguardHealthy: Boolean
+  vlessHealthy: Boolean
+  openconnectHealthy: Boolean
+  capabilities: UpdateNodeCapabilitiesInput
+}
+
+input SetupHomeDeviceInput {
+  setupCode: String!
+  nodeName: String
+  ddnsProvider: String
+  ddnsHostname: String
+  ddnsApiKey: String
+}
+
+input UpdateHomeDeviceInput {
+  nodeId: ID!
+  nodeName: String
+  ddnsEnabled: Boolean
+  ddnsProvider: String
+  ddnsHostname: String
+  ddnsApiKey: String
+  isPublic: Boolean
+  maxGuestConnections: Int
+}
+
+# ========== RESPONSE TYPES ==========
+
+type PartnerResponse {
+  success: Boolean!
+  message: String
+  partner: OrbMeshPartner
+  apiKey: String
+}
+
+type NodeResponse {
+  success: Boolean!
+  message: String
+  node: OrbMeshNode
+}
+
+type HomeDeviceResponse {
+  success: Boolean!
+  message: String
+  homeDevice: HomeDevice
+  setupCode: String
+}
+
+type HeartbeatResponse {
+  success: Boolean!
+  message: String
+  nodeId: ID
+  serverTime: LocalDateTime!
+}
+
+# ========== ADMIN TYPES ==========
+
+type HybridAdminStats {
+  totalPartners: Int!
+  activePartners: Int!
+  totalNodes: Int!
+  onlineNodes: Int!
+  nodesByDeploymentType: [DeploymentTypeCount!]!
+  nodesByRegion: [RegionCount!]!
+  totalBandwidthServedGb: Float!
+  totalTokensDistributed: Float!
+  pendingPayouts: Float!
+}
+
+type DeploymentTypeCount {
+  deploymentType: DeploymentType!
+  count: Int!
+  onlineCount: Int!
+}
+
+type RegionCount {
+  region: String!
+  count: Int!
+  onlineCount: Int!
+}
+
+# ========== PAGINATED TYPES ==========
+
+type OrbMeshPartnerPage {
+  content: [OrbMeshPartner!]!
+  totalElements: Int!
+  totalPages: Int!
+  number: Int!
+  size: Int!
+}
+
+type OrbMeshNodePage {
+  content: [OrbMeshNode!]!
+  totalElements: Int!
+  totalPages: Int!
+  number: Int!
+  size: Int!
+}
+
+type TokenEarningPage {
+  content: [TokenEarning!]!
+  totalElements: Int!
+  totalPages: Int!
+  number: Int!
+  size: Int!
+}
+
+# ========== QUERIES ==========
+
+extend type Query {
+  # Partner queries
+  partnerDashboard: PartnerDashboard
+  myPartner: OrbMeshPartner
+  partnerById(id: ID!): OrbMeshPartner
+
+  # Node queries
+  myNodes: [OrbMeshNode!]!
+  myHomeDevices: [HomeDevice!]!
+  nodeByUuid(uuid: String!): OrbMeshNode
+  onlineNodes(deploymentType: DeploymentType, region: String): [OrbMeshNode!]!
+
+  # Earnings queries
+  myEarnings(page: Int = 0, size: Int = 20): TokenEarningPage!
+  partnerEarnings(partnerId: ID!, page: Int = 0, size: Int = 20): TokenEarningPage!
+
+  # Admin queries
+  adminHybridStats: HybridAdminStats!
+  adminAllPartners(page: Int = 0, size: Int = 20, tier: PartnerTier): OrbMeshPartnerPage!
+  adminAllNodes(page: Int = 0, size: Int = 20, deploymentType: DeploymentType, online: Boolean): OrbMeshNodePage!
+  adminPartnerById(id: ID!): OrbMeshPartner
+  adminNodeByUuid(uuid: String!): OrbMeshNode
+}
+
+# ========== MUTATIONS ==========
+
+extend type Mutation {
+  # Partner mutations
+  registerPartner(input: RegisterPartnerInput!): PartnerResponse!
+  updatePartner(input: UpdatePartnerInput!): PartnerResponse!
+  regeneratePartnerApiKey: PartnerResponse!
+
+  # Node mutations (called by OrbMesh server)
+  registerNode(input: RegisterNodeInput!): NodeResponse!
+  updateNodeCapabilities(input: UpdateNodeCapabilitiesInput!): NodeResponse!
+  nodeHeartbeat(input: NodeHeartbeatInput!): HeartbeatResponse!
+
+  # Home device mutations
+  generateHomeDeviceSetupCode: HomeDeviceResponse!
+  setupHomeDevice(input: SetupHomeDeviceInput!): HomeDeviceResponse!
+  updateHomeDevice(input: UpdateHomeDeviceInput!): HomeDeviceResponse!
+  removeHomeDevice(nodeId: ID!): NodeResponse!
+
+  # Admin mutations
+  adminUpdatePartnerTier(partnerId: ID!, tier: PartnerTier!): PartnerResponse!
+  adminVerifyPartner(partnerId: ID!, verified: Boolean!): PartnerResponse!
+  adminDeactivatePartner(partnerId: ID!): PartnerResponse!
+  adminRemoveNode(nodeId: ID!): NodeResponse!
+}

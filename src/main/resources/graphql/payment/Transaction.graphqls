@@ -1,0 +1,17 @@
+type TransactionView {
+  id: String!
+  userId: String
+  amount: BigDecimal!
+  currency: String!
+  status: String!
+  gateway: String!
+  transactionDate: LocalDateTime!
+  description: String
+}
+
+type TransactionPage {
+  content: [TransactionView!]!
+  totalElements: Int!
+  size: Int!
+  number: Int!
+}

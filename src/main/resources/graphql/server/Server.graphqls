@@ -1,0 +1,242 @@
+input ServerEdit {
+  hostName: String!
+  publicIp: String!
+  type: ServerType!
+  privateIp: String
+  city: String
+  country: String
+  continent: String
+  secret: String!
+  ports: Int
+  sshUsername: String
+  sshKey: String
+  killCommand: String
+  rootCommand: String
+  description: String
+  hero: String
+  spot: String
+  zeus: String
+  bridgeIp: String
+  bridgeCountry: String
+}
+
+enum ServerType {
+  cisco
+  other
+}
+
+type ServerView {
+  id: Int
+  hostName: String
+  publicIp: String
+  type: ServerType
+  privateIp: String
+  city: String
+  country: String
+  continent: String
+  secret: String
+  ports: Int
+  sshUsername: String
+  sshKey: String
+  killCommand: String
+  rootCommand: String
+  description: String
+  hero: String
+  spot: String
+  zeus: String
+  bridgeIp: String
+  bridgeCountry: String
+}
+
+type ClientServerView {
+  id: Int
+  hostName: String
+  publicIp: String
+  city: String
+  country: String
+  description: String
+  continent: String
+  connectedUserCount: Int
+  congestionLevel: String
+  hero: String
+  spot: String
+  zeus: String
+  bridgeIp: String
+  bridgeCountry: String
+}
+
+type MiningServerView {
+  id: ID!
+  hostName: String!
+  publicIp: String!
+  location: String!
+  city: String!
+  country: String!
+  continent: String!
+  cryptoFriendly: Boolean!
+  activeConnections: Int!
+  protocols: [MiningServerProtocolView!]!
+  metrics: ServerMetrics
+  tokenBalance: Float!
+  miningEnabled: Boolean!
+  miningRate: Float!
+  lastRewardClaim: DateTime
+}
+
+type MiningServerProtocolView {
+  id: ID!
+  type: ProtocolType!
+  port: Int!
+  enabled: Boolean!
+  configString: String!
+  publicKey: String
+}
+
+type ServerMetrics {
+  cpuUsage: Float!
+  memoryUsage: Float!
+  networkSpeed: Float!
+  activeConnections: Int!
+  lastHeartbeat: String!
+}
+
+input MiningServerProtocolInput {
+  serverId: ID!
+  type: ProtocolType!
+  port: Int!
+  enabled: Boolean!
+  publicKey: String
+  configTemplate: String
+}
+
+type ServersByProtocol {
+  vlessServers: [MiningServerView!]!
+  realityServers: [MiningServerView!]!
+  wireguardServers: [MiningServerView!]!
+  openconnectServers: [MiningServerView!]!
+}
+
+type ServerStats {
+  totalServers: Int!
+  totalActiveServers: Int!
+  serversByProtocol: [ProtocolStats!]!
+  serversByContinent: [ContinentStats!]!
+  cryptoFriendlyCount: Int!
+}
+
+type ProtocolStats {
+  protocol: ProtocolType!
+  count: Int!
+  activeCount: Int!
+}
+
+type ContinentStats {
+  continent: String!
+  count: Int!
+  countries: [String!]!
+}
+
+type MiningRewardResult {
+  success: Boolean!
+  amount: Float!
+  newBalance: Float!
+  message: String
+}
+
+type WithdrawResult {
+  success: Boolean!
+  transactionHash: String
+  message: String
+}
+
+type MiningSettings {
+  minWithdrawAmount: Float!
+  rewardRate: Float!
+  AutoWithdraw: Boolean!
+  withdrawAddress: String
+}
+
+input MiningSettingsInput {
+  AutoWithdraw: Boolean
+  withdrawAddress: String
+  minWithdrawAmount: Float
+}
+
+type MiningActivityView {
+  id: ID!
+  server: MiningServerView!
+  startTime: DateTime!
+  endTime: DateTime
+  dataTransferred: Float!
+  connectionStability: Float!
+  protocolEfficiency: Float!
+  isActive: Boolean!
+  currentReward: Float!
+}
+
+type MiningSettingsView {
+  withdrawAddress: String
+  minWithdrawAmount: Float
+  autoWithdraw: Boolean
+  notifications: Boolean
+}
+
+type MiningRewardView {
+  id: ID!
+  server: MiningServerView!
+  amount: Float!
+  rewardTime: DateTime!
+  transactionHash: String
+}
+
+type ServerMiningMetrics {
+  server: MiningServerView!
+  cpuUsage: Float!
+  memoryUsage: Float!
+  uploadSpeed: Float!
+  downloadSpeed: Float!
+  networkSpeed: Float!
+  activeConnections: Int!
+  maxConnections: Int!
+  uptime: Float!
+  responseTime: Int!
+  lastHeartbeat: DateTime!
+  miningRate: Float!
+  totalMiners: Int!
+}
+
+type MiningStats {
+  totalRewards: Float!
+  todayRewards: Float!
+  activeMiningSessions: Int!
+  averageDailyReward: Float!
+  topServers: [ServerMiningMetrics!]!
+  rewardHistory: [DailyReward!]!
+}
+
+type DailyReward {
+  date: Date!
+  amount: Float!
+  serverCount: Int!
+}
+
+enum ProtocolType {
+  VLESS
+  REALITY
+  WIREGUARD
+  OPENCONNECT
+}
+
+enum SortType {
+  # Mining server sort types
+  LOCATION
+  CONTINENTAL
+  CRYPTO_FRIENDLY
+  CONNECTIONS
+
+  # OrbMesh server sort types
+  NAME
+  REGION
+  LATENCY
+  LOAD
+}

@@ -1,0 +1,17 @@
+package com.orbvpn.api.domain.dto;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class DnsServiceStatView {
+    private String serviceId;
+    private String serviceName;
+    private long queryCount;
+    private String lastQueried;
+}

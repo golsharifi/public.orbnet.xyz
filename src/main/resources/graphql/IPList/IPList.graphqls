@@ -1,0 +1,9 @@
+type Whitelist {
+    id: Int
+    ipAddress: String!
+}
+
+type Blacklist {
+    id: Int
+    ipAddress: String!
+}

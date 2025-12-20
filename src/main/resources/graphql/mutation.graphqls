@@ -1,0 +1,669 @@
+type Mutation {
+  # Mining server mutations
+  enableMiningServer(serverId: ID!): MiningServerView!
+  disableMiningServer(serverId: ID!): MiningServerView!
+  startMining(serverId: ID!): MiningActivityView!
+  stopMining(serverId: ID!): MiningActivityView!
+
+  # Mining Rewards
+  claimMiningRewards(serverId: ID!): MiningRewardResult!
+  withdrawTokens(amount: Float!): WithdrawResult!
+  claimRewards: MiningRewardResult!
+
+  # Mining Settings
+  updateMiningSettings(input: MiningSettingsInput!): MiningSettingsView!
+
+  # Mining Server Prototocol
+  updateMiningServerProtocol(
+    input: MiningServerProtocolInput!
+  ): MiningServerProtocolView!
+
+  # UUID Migration
+  migrateUserUuids: Boolean!
+  validateUserUuids: MigrationResult!
+
+  # Profile Migration
+  fixUsersWithoutProfiles: Int!
+  countUsersWithoutProfiles: Int!
+
+  # Add webhook mutations to the existing Mutation type
+  createWebhookConfiguration(
+    input: WebhookConfigurationInput!
+  ): WebhookConfiguration!
+  updateWebhookConfiguration(
+    id: ID!
+    input: WebhookConfigurationInput!
+  ): WebhookConfiguration!
+  deleteWebhookConfiguration(id: ID!): Boolean!
+  testWebhookConfiguration(id: ID!): Boolean!
+
+  #QR Code Login
+  generateQrCode: QrLoginResponse!
+  refreshQrCode(sessionId: String): QrLoginResponse!
+  confirmQrLogin(qrCode: String!): Boolean!
+  checkQrLoginStatus(sessionId: String!): AuthenticatedUser
+  # Generate direct login QR for authenticated users (Settings page)
+  # Returns QR code with embedded tokens for instant login on another device
+  generateDirectLoginQr: QrLoginResponse!
+
+  #Notifications:
+  whatsAppDisconnect: Boolean!
+  whatsAppConnect: Boolean!
+  whatsAppDebugState: String!
+  whatsAppRegenerateQR: Boolean!
+  whatsAppDebugAuthentication: String!
+
+  # Send WhatsApp Notification (by userId or username)
+  sendWhatsAppNotification(
+    userId: Int
+    username: String
+    message: String!
+  ): Boolean!
+
+  # Send Telegram Notification (by userId or username)
+  sendTelegramNotification(
+    userId: Int
+    username: String
+    message: String!
+  ): Boolean!
+
+  # Update Telegram Details (by userId or username)
+  updateTelegramDetails(
+    userId: Int
+    username: String
+    telegramUsername: String
+    telegramChatId: String
+  ): Boolean!
+
+  # Telegram Configuration
+  configureTelegram(input: TelegramConfigInput!): Boolean!
+  disconnectTelegram: Boolean!
+
+  replyToTelegramMessage(messageId: ID!, reply: String!): Boolean!
+  markTelegramMessageAsRead(messageId: ID!): Boolean!
+
+  # WhatsApp Configuration
+  configureWhatsApp(phoneNumber: String!): Boolean!
+  verifyWhatsAppCode(code: String!): Boolean!
+
+  # Messaging Preferences
+  updateMessagingPreferences(
+    input: MessagingPreferencesInput!
+  ): MessagingPreferences!
+
+  # Message Templates
+  createMessageTemplate(input: MessageTemplateInput!): MessageTemplate!
+  updateMessageTemplate(id: ID!, input: MessageTemplateInput!): MessageTemplate!
+  deleteMessageTemplate(id: ID!): Boolean!
+
+  # User Profile Updates
+  updateTelegramInfo(username: String!, chatId: String!): UserProfileView!
+
+  # Bulk Messaging
+  sendBulkMessage(
+    userIds: [ID!]!
+    templateId: ID!
+    variables: [String!]
+    channels: [String!]!
+  ): [String!]!
+
+  # Channel Tests
+  testWhatsAppConnection(phoneNumber: String!): Boolean!
+  testTelegramConnection(chatId: String!): Boolean!
+
+  # Bulk Messaging
+  sendBulkTelegramMessage(message: String!, userIds: [Int!]): Boolean!
+  sendBulkWhatsAppMessage(message: String!, userIds: [Int!]): Boolean!
+
+  startDripCampaign(channel: String!, message: String!): Boolean
+  stopDripCampaign: Boolean
+  updateNotificationSettings(batchSize: Int, delayBetweenBatches: Int): Boolean
+
+  updateNotificationPreferences(
+    input: NotificationPreferencesInput!
+  ): NotificationPreferences!
+
+  # Email Unsubscribe Mutations
+  unsubscribeUserFromEmail(userId: ID!): Boolean!
+  resubscribeUserToEmail(userId: ID!): Boolean!
+  updateUserEmailCategories(userId: ID!, categories: [NotificationCategory!]!): Boolean!
+
+  # User self-service email preferences
+  unsubscribeFromEmail: Boolean!
+  resubscribeToEmail: Boolean!
+  updateEmailCategories(categories: [NotificationCategory!]!): NotificationPreferences!
+
+  #OAuth Login
+  oauthLogin(token: String!, socialMedia: SocialMedia!): AuthenticatedUser
+
+  #Single Sign-On
+  signup(email: String!, password: String!, referral: String): SignupResponse
+  resendVerificationEmail(email: String!): Boolean!
+  verifyEmailWithCode(
+    email: String!
+    verificationCode: String!
+  ): AuthenticatedUser!
+  verifyResetPasswordCode(email: String!, verificationCode: String!): Boolean
+  editProfile(userProfile: UserProfileEdit): UserProfileView
+  editAutoRenew(isActive: Boolean!): Boolean
+  login(email: String!, password: String!): AuthenticatedUser!
+  requestResetPassword(email: String!): Boolean!
+  resetPassword(token: String!, password: String!): Boolean!
+  changePassword(oldPassword: String!, password: String!): Boolean!
+
+  # Magic Password Login (passwordless login via 6-digit email code)
+  requestMagicLogin(email: String!): Boolean!
+  verifyMagicLogin(email: String!, code: String!): AuthenticatedUser!
+
+  # Magic Link Login (passwordless login via clickable email link)
+  requestMagicLink(email: String!): Boolean!
+
+  # Client Metadata - Universal tracking for all platforms (web, mobile, desktop)
+  # Records device, location, and platform info for analytics and security
+  "Record client metadata for the current event (can be called without authentication for signup)"
+  recordClientMetadata(eventType: String!, clientMetadata: ClientMetadataInput): ClientMetadataView
+
+  # Signup with client metadata (backward compatible - clientMetadata is optional)
+  "Enhanced signup that also records client metadata for analytics"
+  signupWithMetadata(email: String!, password: String!, referral: String, clientMetadata: ClientMetadataInput): SignupResponse
+
+  # Login with client metadata (backward compatible - clientMetadata is optional)
+  "Enhanced login that also records client metadata for analytics"
+  loginWithMetadata(email: String!, password: String!, clientMetadata: ClientMetadataInput): AuthenticatedUser!
+
+  createServiceGroup(serviceGroup: ServiceGroupEdit!): ServiceGroupView
+  editServiceGroup(id: Int!, serviceGroup: ServiceGroupEdit!): ServiceGroupView
+  deleteServiceGroup(id: Int!): ServiceGroupView
+  createGroup(group: GroupEdit): GroupView
+  editGroup(id: Int!, group: GroupEdit): GroupView
+  deleteGroup(id: Int!): GroupView
+  createServer(server: ServerEdit): ServerView
+  editServer(id: Int!, server: ServerEdit): ServerView
+  deleteServer(id: Int!): ServerView
+
+  # Token refresh
+  refreshToken(refreshToken: String!): AuthenticatedUser!
+
+  # Complete removal of subscription
+  removeUserSubscription(username: String!): UserSubscriptionView
+
+  # Revert to previous subscription state
+  revertLastSubscriptionChange(username: String!): UserSubscriptionView
+
+  # Revert to specific number of days
+  revertSubscriptionToDays(
+    username: String!
+    remainingDays: Int!
+  ): UserSubscriptionView
+
+  # User mutations
+  purchaseExtraLogins(
+    planId: ID!
+    quantity: Int!
+    paymentMethod: String!
+    selectedCoin: String
+  ): PaymentResponse!
+  giftExtraLogins(planId: ID!, recipientEmail: String!): Boolean!
+  cancelExtraLoginSubscription(subscriptionId: String!): Boolean!
+
+  # Admin mutations
+  createExtraLoginPlan(input: ExtraLoginsPlanInput!): ExtraLoginsPlan!
+  updateExtraLoginPlan(id: ID!, input: ExtraLoginsPlanInput!): ExtraLoginsPlan!
+  deleteExtraLoginPlan(id: ID!): Boolean!
+
+  """
+  Purchase device addon for current user (pro-rata pricing).
+  Uses the standard payment flow.
+  """
+  purchaseDeviceAddon(
+    deviceCount: Int!
+    paymentMethod: String!
+    selectedCoin: String
+  ): PaymentResponse!
+
+  """
+  Reseller adds devices to a user's subscription.
+  Charges reseller's credit (pro-rata based on remaining days).
+  Admin/Reseller only.
+  """
+  resellerAddDevices(userId: Int!, deviceCount: Int!): ResellerDeviceAddResult!
+
+  """
+  Reseller sets exact device count for a user.
+  Only charges for increases, no refund for decreases.
+  Admin/Reseller only.
+  """
+  resellerSetDeviceCount(userId: Int!, deviceCount: Int!): ResellerDeviceAddResult!
+
+  # admin users
+  createNewUserByAdmin(
+    groupId: Int
+    resellerId: Int
+    firstName: String
+    lastName: String
+    userName: String
+    email: String
+    devices: String
+    country: String
+    phone: String
+    language: String
+  ): UserView
+  deleteUser(id: Int): Boolean
+  toggleUserEnabled(userId: Int!, enabled: Boolean!): Boolean
+  deleteBundleUsers(ids: [Int]): Boolean
+  deleteUserAccount: Boolean!
+  createUser(user: UserCreate, userProfile: UserProfileEdit): Boolean
+  updateSubscription(
+    userId: Int
+    multiLoginCount: Int
+    dailyBandwidth: Float
+    downloadUpload: Float
+  ): Boolean
+  editProfileByAdmin(
+    id: Int
+    updatedUser: UserCreate
+    updatedProfile: UserProfileEdit
+  ): Boolean
+  "Change a user's role (ADMIN only). Valid roles: USER, ADMIN, RESELLER"
+  changeUserRole(userId: Int!, role: String!): UserView!
+
+  # resellers
+  createReseller(reseller: ResellerCreate): ResellerView!
+  setResellerLevel(resellerId: Int!, level: ResellerLevelName!): ResellerView!
+  addResellerCredit(resellerId: Int!, credit: String!): ResellerView!
+  deductResellerCredit(resellerId: Int!, credit: String!): ResellerView!
+  editReseller(id: Int!, reseller: ResellerEdit): ResellerView!
+  deleteReseller(id: Int!): ResellerView!
+  addResellerServiceGroup(resellerId: Int, serviceGroupId: Int): ResellerView!
+  removeResellerServiceGroup(
+    resellerId: Int
+    serviceGroupId: Int
+  ): ResellerView!
+  resellerCreateUser(user: ResellerUserCreate): UserView!
+  resellerEditUser(id: Int!, resellerUserEdit: ResellerUserEdit): UserView!
+  resellerEditUserByEmail(
+    email: String!
+    resellerUserEdit: ResellerUserEdit
+  ): UserView!
+  resellerDeleteUsers(ids: [Int!]!): [UserView!]
+  resellerDeleteUsersByEmails(emails: [String!]!): [UserView!]
+
+  # Admin/Reseller password reset - generates new random password and notifies user via all channels
+  adminResetUserPassword(userId: Int!): AdminPasswordResetResult!
+  adminResetUserPasswordByEmail(email: String!): AdminPasswordResetResult!
+
+  updateResellerLevel(id: Int!, level: ResellerLevelEdit!): ResellerLevelView
+  updateResellerLevelCoefficients(
+    levelCoefficients: ResellerLevelCoefficientsEdit
+  ): ResellerLevelCoefficientsView
+  updateResellerScoreLimitBySymbol(
+    resellerScoreLimitEdit: ResellerScoreLimitEdit
+  ): ResellerScoreLimit
+  updateResellerScoreLimits(
+    resellerScoreLimitEdits: [ResellerScoreLimitEdit]
+  ): [ResellerScoreLimit]
+  calculateResellerScore(resellerId: Int): ResellerScore
+
+  # files
+  createFile(file: FileEdit): FileView
+  editFile(id: Int!, file: FileEdit): FileView
+  deleteFile(id: Int!): FileView
+
+  # news
+  createNews(news: NewsEdit): NewsView
+  editNews(id: Int!, news: NewsEdit): NewsView
+  deleteNews(id: Int!): NewsView
+  createTicket(ticket: TicketCreate): TicketView
+  createTicketForUser(userId: Int!, ticket: TicketCreate): TicketView
+  closeTicket(id: Int!): TicketView
+  closeTickets(id: [Int]!): [TicketView]
+  replyToTicket(ticketId: Int!, reply: TicketReplyCreate): TicketReplyView
+
+  # payment
+  stripeCreatePayment(
+    category: PaymentCategory!
+    groupId: Int
+    moreLoginCount: Int
+    renew: Boolean
+    paymentMethodId: String!
+  ): StripePaymentResponse!
+
+  stripeConfirmPayment(paymentIntentId: String!): StripePaymentResponse!
+
+  stripeUpdateSubscription(
+    groupId: Int!
+    """
+    Stripe subscription ID (starts with 'sub_')
+    """
+    subscriptionId: String!
+  ): StripePaymentResponse!
+
+  stripeCancelSubscription(subscriptionId: String!): Boolean!
+
+  coinpaymentCreatePayment(
+    category: PaymentCategory!
+    groupId: Int
+    moreLoginCount: Int
+    coin: String!
+  ): CoinPaymentResponse
+  coinpaymentCreatePayment2(
+    category: PaymentCategory!
+    groupId: Int
+    moreLoginCount: Int
+    coin: String!
+  ): AddressResponse
+
+  # NOWPayments - Modern cryptocurrency payment gateway (replacement for CoinPayments)
+  nowPaymentCreatePayment(
+    category: PaymentCategory!
+    groupId: Int
+    moreLoginCount: Int
+    payCurrency: String!
+  ): NowPaymentResponse
+
+  paypalApprovePayment(orderId: String): PaypalApprovePaymentResponse
+  appleCreatePayment(receipt: String): Boolean
+  parspalCreatePayment(
+    category: PaymentCategory!
+    groupId: Int
+    moreLoginCount: Int
+  ): ParspalCreatePaymentResponse
+  parspalApprovePayment(payment_id: String, receipt_number: String): Boolean
+
+  # Token earning and spending (legacy - use verified ad session flow instead)
+  "DEPRECATED: Use requestAdSession + completeAdSession for secure ad verification"
+  earnTokens(adVendor: String!, region: String!): TokenBalance! @deprecated(reason: "Use requestAdSession + completeAdSession")
+  spendTokens(minutes: Int!, activeDevices: Int!): TokenBalance!
+
+  # Verified ad session flow (secure)
+  "Request a new ad viewing session. Returns session ID and signature."
+  requestAdSession(adVendor: String!, region: String, deviceId: String): AdSessionResponse!
+  "Complete an ad viewing session after watching the ad. Grants tokens upon verification."
+  completeAdSession(input: CompleteAdSessionInput!): TokenBalance!
+
+  # Admin token rate management
+  updateTokenRate(input: TokenRateInput!): TokenRate!
+  deleteTokenRate(id: ID!): Boolean!
+
+  # Staking operations
+  createStakingConfig(input: TokenStakingConfigInput!): TokenStakingConfig!
+  updateStakingConfig(
+    id: ID!
+    input: TokenStakingConfigInput!
+  ): TokenStakingConfig!
+  deleteStakingConfig(id: ID!): Boolean!
+  toggleStakingConfig(id: ID!): TokenStakingConfig!
+  stakeTokens(input: StakeTokensInput!): TokenStake!
+  unstakeTokens(stakeId: ID!): TokenStake!
+
+  # upload users
+  uploadUsers(file: Upload!): Boolean!
+
+  #connections and devices
+  disconnectBySessionId(onlineSessionId: String!): Boolean
+  disconnectByUserIdAndDeviceId(
+    userId: Int!
+    deviceIdInput: DeviceIdInput
+  ): Boolean
+  activateDevice(userId: Int!, deviceIdInput: DeviceIdInput): Boolean
+  deactivateDevice(userId: Int!, deviceIdInput: DeviceIdInput): Boolean
+
+  #scheduling
+  scheduleEmail(scheduleEmailRequest: ScheduleEmailRequest): Boolean
+  sendSms(smsRequest: SmsRequest): Boolean
+
+  #subscription
+  # Renewal operations (add to existing subscription)
+  renewSubscriptionWithCurrentGroup(username: String!): UserSubscriptionView
+  renewSubscriptionWithNewGroup(
+    username: String!
+    groupId: Int!
+  ): UserSubscriptionView
+  renewWithDays(username: String!, days: Int!): UserSubscriptionView
+
+  # Reset operations (replace from today)
+  resetSubscriptionWithCurrentGroup(username: String!): UserSubscriptionView
+  resetSubscriptionWithNewGroup(
+    username: String!
+    groupId: Int!
+  ): UserSubscriptionView
+
+  # Reseller operations
+  resellerRenewSubscriptionWithCurrentGroup(
+    username: String!
+  ): UserSubscriptionView
+  resellerRenewSubscriptionWithNewGroup(
+    username: String!
+    groupId: Int!
+  ): UserSubscriptionView
+  resellerResetSubscriptionWithCurrentGroup(
+    username: String!
+  ): UserSubscriptionView
+  resellerResetSubscriptionWithNewGroup(
+    username: String!
+    groupId: Int!
+  ): UserSubscriptionView
+
+  # External subscription verification
+  verifyAndAssignSubscription(
+    userId: Int!
+    purchaseToken: String!
+    platform: String!
+    subscriptionId: String
+    packageName: String
+  ): SubscriptionResponse
+
+  # Gift Card mutations
+  generateGiftCard(input: GiftCardCreateInput!): GiftCard!
+  generateBulkGiftCards(input: GiftCardCreateInput!, count: Int!): [GiftCard!]!
+  redeemGiftCard(code: String!): GiftCard!
+  deleteGiftCard(id: ID!): Boolean!
+  cancelGiftCard(id: ID!): GiftCard!
+  cancelGiftCards(ids: [ID!]!): [GiftCard!]!
+
+  #Invoice
+  updateInvoice(invoiceUpdate: InvoiceUpdate): InvoiceResponse
+  emailInvoicePDF(invoicePdf: InvoicePDF): Boolean
+
+  #Discount
+  createCouponCode(couponCodeView: CouponCodeView): CouponCode
+  updateCouponCode(couponCodeView: CouponCodeView): CouponCode
+  checkCouponCode(code: String): CouponCode
+  useCouponCode(code: String): CouponCode
+  generateTokenCodeForUser(tokenCodeView: TokenCodeView): TokenCodeResponse
+  useTokenCode(code: String): TokenCode
+  checkTokenCode(code: String): TokenCode
+
+  #User Device
+  loginDevice(device: UserDeviceInput!): UserDeviceView
+  "Logout and revoke the current access token. Optionally logout a specific device."
+  logout(deviceId: String): Boolean
+  logoutDeviceByUserDeviceId(userDeviceId: Int!): UserDeviceView
+  logoutDeviceByDeviceId(deviceId: String!): UserDeviceView
+  resellerLogoutDevice(userId: Int!, deviceId: String!): UserDeviceView
+  resellerActivateDevice(deviceId: String!): UserDeviceView
+  resellerDeactivateDevice(deviceId: String!): UserDeviceView
+  sendNotificationByDeviceId(
+    deviceId: String!
+    notification: NotificationInput!
+  ): FcmNotificationView
+  sendNotificationByToken(
+    token: String!
+    notification: NotificationInput!
+  ): FcmNotificationView
+  sendNotificationToAll(notification: NotificationInput!): FcmNotificationView
+  deleteDevices(userId: Int, username: String): Boolean
+
+  #IP List
+  addToWhitelist(ipAddress: String!): Whitelist
+  removeFromWhitelist(ipAddress: String!): Boolean
+  addToBlacklist(ipAddress: String!): Blacklist
+  removeFromBlacklist(ipAddress: String!): Boolean
+
+  # Encryption Mutations
+  reEncryptUserPasswordsByRange(
+    fromUserId: Int!
+    toUserId: Int!
+    sendEmail: Boolean!
+  ): String!
+
+  # RadCheck Synchronization and Cleanup Mutations
+  synchronizeRadCheckPasswords(fromUserId: Int!, toUserId: Int!): String!
+  cleanupRadCheckDuplicates(fromUserId: Int!, toUserId: Int!): String!
+  getRadCheckDuplicateStats: String!
+
+  # ========== USAGE TRACKING ==========
+
+  #  Record OrbMesh usage for analytics and billing
+  recordOrbMeshUsage(input: OrbMeshUsageInput!): OrbMeshUsageResult!
+
+  # ========== SERVER MANAGEMENT (Admin) ==========
+
+  #  Register a new OrbMesh server (admin only)
+  registerOrbMeshServer(input: OrbMeshServerInput!): OrbMeshServerRegistrationResult!
+
+  #  Update an OrbMesh server (admin only)
+  updateOrbMeshServer(id: ID!, input: OrbMeshServerInput!): OrbMeshServerView!
+
+  #  Delete an OrbMesh server (admin only)
+  deleteOrbMeshServer(id: ID!): Boolean!
+
+  #  Regenerate server API credentials (admin only)
+  regenerateOrbMeshServerCredentials(id: ID!): OrbMeshServerRegistrationResult!
+
+  # ========== SERVER STATUS ==========
+
+  #  Update server online status (called by OrbMesh server on startup/shutdown)
+  updateOrbMeshServerStatus(serverId: ID!, online: Boolean!): OrbMeshServerView!
+
+  # Update server metrics (called by OrbMesh server via heartbeat)
+  updateOrbMeshServerMetrics(
+    serverId: ID!
+    metrics: OrbMeshServerMetricsInput!
+  ): OrbMeshServerView!
+
+  # ========== WIREGUARD MANAGEMENT ==========
+
+  # Sync WireGuard config from mobile app (called after successful connection)
+  syncOrbMeshWireGuardConfig(input: SyncOrbMeshWireGuardConfigInput!): SyncOrbMeshWireGuardConfigResult!
+
+  # Revoke a WireGuard config
+  revokeOrbMeshWireGuardConfig(orbmeshServerId: ID!): Boolean!
+
+  # ========== VLESS MANAGEMENT ==========
+
+  # Sync VLESS config from mobile app (called after successful connection)
+  syncOrbMeshVlessConfig(input: SyncOrbMeshVlessConfigInput!): SyncOrbMeshVlessConfigResult!
+
+  # Revoke a VLESS config
+  revokeOrbMeshVlessConfig(orbmeshServerId: ID!): Boolean!
+
+  # ========== CONNECTION TRACKING (Server-to-Backend) ==========
+
+  # Report connection start (called by OrbMesh server when user connects)
+  reportOrbMeshConnectionStart(input: OrbMeshConnectionStartInput!): OrbMeshConnectionStartResult!
+
+  # Report connection end (called by OrbMesh server when user disconnects)
+  reportOrbMeshConnectionEnd(input: OrbMeshConnectionEndInput!): OrbMeshConnectionEndResult!
+
+  # Report batch of connection starts (called by OrbMesh server for efficiency)
+  reportOrbMeshConnectionBatch(events: [OrbMeshConnectionStartInput!]!): OrbMeshConnectionBatchResult!
+
+  # Report batch of connection ends (called by OrbMesh server for efficiency)
+  reportOrbMeshConnectionEndBatch(events: [OrbMeshConnectionEndInput!]!): OrbMeshConnectionBatchResult!
+
+  # ========== BANDWIDTH ADDON MANAGEMENT ==========
+
+  # Purchase bandwidth addon (from app store)
+  purchaseBandwidthAddon(input: OrbMeshBandwidthPurchaseInput!): OrbMeshBandwidthPurchaseResult!
+
+  # Admin: Grant promotional bandwidth to a user
+  grantBandwidthToUser(input: OrbMeshGrantBandwidthInput!): OrbMeshBandwidthPurchaseResult!
+
+  # Admin: Reset user's bandwidth usage to zero
+  adminResetUserBandwidth(userId: Int!, notes: String): AdminBandwidthResetResult!
+
+  # Admin: Set user's bandwidth quota (override plan quota)
+  adminSetUserBandwidthQuota(userId: Int!, quotaGB: Float, unlimited: Boolean): AdminBandwidthUpdateResult!
+
+  # Admin: Force disconnect user if bandwidth exceeded
+  adminForceDisconnectUser(userId: Int!, reason: String!): AdminForceDisconnectResult!
+
+  # ========== GLOBAL SETTINGS MANAGEMENT ==========
+
+  # Update global settings (admin only)
+  updateGlobalSettings(input: GlobalSettingsInput!): GlobalSettingsView!
+
+  # ========== STATIC IP SUBSCRIPTION ==========
+
+  # Create static IP subscription
+  createStaticIPSubscription(input: CreateStaticIPSubscriptionInput!): StaticIPSubscriptionResponse!
+
+  # Verify Apple In-App Purchase and create Static IP subscription
+  verifyStaticIPApplePurchase(
+    receipt: String!
+    productId: String!
+    transactionId: String!
+    originalTransactionId: String
+  ): StaticIPSubscriptionResponse!
+
+  # Verify Google Play In-App Purchase and create Static IP subscription
+  verifyStaticIPGooglePlayPurchase(
+    purchaseToken: String!
+    productId: String!
+    orderId: String
+  ): StaticIPSubscriptionResponse!
+
+  # Cancel static IP subscription (at end of billing period)
+  cancelStaticIPSubscription: Boolean!
+
+  # Change static IP plan
+  changeStaticIPPlan(newPlanType: StaticIPPlanType!): StaticIPSubscriptionResponse!
+
+  # ========== STATIC IP ALLOCATION ==========
+
+  # Allocate a static IP in a region
+  allocateStaticIP(input: AllocateStaticIPInput!): StaticIPAllocationResponse!
+
+  # Release a static IP allocation
+  releaseStaticIP(allocationId: ID!): Boolean!
+
+  # ========== PORT FORWARDING ==========
+
+  # Create a port forward rule
+  createPortForward(input: CreatePortForwardInput!): PortForwardResponse!
+
+  # Delete a port forward rule
+  deletePortForward(ruleId: ID!): Boolean!
+
+  # Toggle port forward rule enabled/disabled
+  togglePortForward(ruleId: ID!, enabled: Boolean!): PortForwardResponse!
+
+  # ========== PORT FORWARD ADDONS ==========
+
+  # Purchase port forward addon pack
+  purchasePortForwardAddon(input: PurchasePortForwardAddonInput!): PortForwardAddonResponse!
+
+  # Cancel port forward addon
+  cancelPortForwardAddon(addonId: ID!): Boolean!
+
+  # ========== STATIC IP ADMIN ==========
+
+  # Admin: Add IPs to pool
+  adminAddStaticIPToPool(region: String!, publicIps: [String!]!): Int!
+
+  # Admin: Remove IP from pool
+  adminRemoveStaticIPFromPool(publicIp: String!): Boolean!
+
+  # Admin: Cancel user's static IP subscription
+  adminCancelStaticIPSubscription(userId: Int!): Boolean!
+
+  # Admin: Release user's static IP allocation
+  adminReleaseStaticIPAllocation(allocationId: ID!): Boolean!
+
+  # Admin: Update allocation status
+  adminUpdateStaticIPAllocationStatus(allocationId: ID!, status: StaticIPAllocationStatus!, error: String): Boolean!
+
+  # Admin: Update port forward rule status
+  adminUpdatePortForwardStatus(ruleId: ID!, status: PortForwardStatus!, error: String): Boolean!
+}
