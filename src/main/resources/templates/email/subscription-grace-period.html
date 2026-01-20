@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title th:text="#{email.subscription.grace.period.title}">Subscription Grace Period</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f3f4f6;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <tr>
+                        <td style="padding: 48px 48px 40px 48px;">
+                            <div th:replace="~{fragments/header :: header(${userName})}"></div>
+
+                            <!-- Clock Icon -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 24px;">
+                                <tr>
+                                    <td align="center">
+                                        <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 16px; line-height: 64px; text-align: center; display: inline-block;">
+                                            <span style="font-size: 28px; color: #ffffff;">&#x23F3;</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Main Heading -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 16px;">
+                                <tr>
+                                    <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 24px; font-weight: 700; color: #111827; line-height: 32px;"
+                                        th:text="#{email.subscription.grace.period.title}">
+                                        Subscription Grace Period
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Message -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 32px;">
+                                <tr>
+                                    <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 16px; color: #6b7280; line-height: 26px;"
+                                        th:text="#{email.subscription.grace.period.message}">
+                                        Your subscription payment failed. You have a grace period to update your payment method.
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Grace Period Card -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #fffbeb; border-radius: 12px; border-left: 4px solid #f59e0b; margin-bottom: 32px;">
+                                <tr>
+                                    <td style="padding: 24px;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                            <tr>
+                                                <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 48px; font-weight: 700; color: #d97706;">
+                                                    <span th:text="${gracePeriodDays}">7</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" style="padding-top: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #92400e;"
+                                                    th:text="#{email.subscription.grace.period.days.remaining}">
+                                                    days remaining to update payment
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Plan Info -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f9fafb; border-radius: 8px; margin-bottom: 32px;">
+                                <tr>
+                                    <td style="padding: 16px;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                            <tr>
+                                                <td style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #6b7280;">
+                                                    <span th:text="#{email.subscription.grace.period.plan}">Plan:</span>
+                                                    <span th:text="${planName}" style="font-weight: 600; color: #111827;">Premium</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #6b7280;">
+                                                    <span th:text="#{email.subscription.grace.period.expires}">Expires:</span>
+                                                    <span th:text="${expiryDate}" style="font-weight: 600; color: #111827;">Jan 15, 2024</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Action -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 32px;">
+                                <tr>
+                                    <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; color: #6b7280; line-height: 22px;"
+                                        th:text="#{email.subscription.grace.period.action}">
+                                        Update your payment method to continue your subscription.
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Update Payment Button -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 32px;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="https://orbvpn.com/account/payment" style="display: inline-block; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+                                            Update Payment Method
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div th:replace="~{fragments/footer :: footer}"></div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

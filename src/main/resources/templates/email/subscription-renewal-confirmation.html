@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title th:text="#{email.subscription.renewal.title}">Subscription Renewed</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f3f4f6;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <tr>
+                        <td style="padding: 48px 48px 40px 48px;">
+                            <div th:replace="~{fragments/header :: header(${userName})}"></div>
+
+                            <!-- Success Icon -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 24px;">
+                                <tr>
+                                    <td align="center">
+                                        <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 50%; display: inline-block; line-height: 64px; text-align: center;">
+                                            <span style="font-size: 32px; color: #ffffff;">&#x2713;</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Main Heading -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 16px;">
+                                <tr>
+                                    <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 24px; font-weight: 700; color: #111827; line-height: 32px;"
+                                        th:text="#{email.subscription.renewal.title}">
+                                        Subscription Renewed!
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Thank You -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 32px;">
+                                <tr>
+                                    <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 16px; color: #6b7280; line-height: 24px;"
+                                        th:text="#{email.subscription.renewal.thanks}">
+                                        Thank you for renewing your OrbVPN subscription.
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Subscription Details -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #ecfdf5; border-radius: 12px; border-left: 4px solid #10b981; margin-bottom: 32px;">
+                                <tr>
+                                    <td style="padding: 24px;">
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                            <tr>
+                                                <td style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 14px; font-weight: 600; color: #065f46; padding-bottom: 16px;"
+                                                    th:text="#{email.subscription.details}">
+                                                    Subscription Details
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #ffffff; border-radius: 8px;">
+                                            <tr>
+                                                <td style="padding: 12px 16px; border-bottom: 1px solid #d1fae5;">
+                                                    <span style="font-size: 13px; color: #6b7280;" th:text="#{email.subscription.plan}">Plan</span>
+                                                    <div style="font-size: 15px; font-weight: 600; color: #065f46; margin-top: 2px;" th:text="${planName}">Premium</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 12px 16px; border-bottom: 1px solid #d1fae5;">
+                                                    <span style="font-size: 13px; color: #6b7280;" th:text="#{email.subscription.duration}">Duration</span>
+                                                    <div style="font-size: 15px; font-weight: 600; color: #065f46; margin-top: 2px;" th:text="${duration}">30 days</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 12px 16px; border-bottom: 1px solid #d1fae5;">
+                                                    <span style="font-size: 13px; color: #6b7280;" th:text="#{email.subscription.devices}">Devices</span>
+                                                    <div style="font-size: 15px; font-weight: 600; color: #065f46; margin-top: 2px;" th:text="${devices}">5 devices</div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 12px 16px;">
+                                                    <span style="font-size: 13px; color: #6b7280;" th:text="#{email.subscription.expiry}">Expires On</span>
+                                                    <div style="font-size: 15px; font-weight: 600; color: #065f46; margin-top: 2px;" th:text="${formattedExpiry}">31 Dec 2024</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- CTA Button -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 32px;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="https://orbvpn.com/account" style="display: inline-block; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+                                            View My Account
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div th:replace="~{fragments/installation-guides :: guides}"></div>
+                            <div th:replace="~{fragments/footer :: footer}"></div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

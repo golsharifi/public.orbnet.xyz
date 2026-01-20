@@ -1,0 +1,41 @@
+enum WebhookProviderType {
+  SLACK
+  GOHIGHLEVEL
+  ZAPIER
+}
+
+type WebhookConfiguration {
+  id: ID!
+  name: String!
+  providerType: WebhookProviderType!
+  endpoint: String!
+  active: Boolean!
+  subscribedEvents: [String!]!
+  providerSpecificConfig: String
+  maxRetries: Int!
+  retryDelay: Int!
+}
+
+type WebhookDelivery {
+  id: ID!
+  webhookConfiguration: WebhookConfiguration!
+  eventType: String!
+  payload: String!
+  status: String!
+  retryCount: Int!
+  createdAt: String!
+  lastAttempt: String
+  responseData: String
+  errorMessage: String
+}
+
+input WebhookConfigurationInput {
+  name: String!
+  providerType: WebhookProviderType!
+  endpoint: String!
+  active: Boolean!
+  subscribedEvents: [String!]!
+  providerSpecificConfig: String
+  maxRetries: Int
+  retryDelay: Int
+}

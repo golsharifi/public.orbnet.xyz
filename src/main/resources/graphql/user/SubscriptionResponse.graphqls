@@ -1,0 +1,12 @@
+type SubscriptionResponse {
+  success: Boolean
+  message: String
+  subscriptionStatus: SubscriptionStatus
+}
+
+type SubscriptionStatus {
+  productId: String
+  startDate: String
+  endDate: String
+  isActive: Boolean
+}

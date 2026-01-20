@@ -1,0 +1,9 @@
+scalar JSON
+scalar LocalDateTime
+scalar LocalDate
+scalar Date
+scalar DateTime
+scalar BigDecimal
+scalar BigInteger
+scalar Upload
+scalar Long

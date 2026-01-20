@@ -1,0 +1,549 @@
+type Query {
+  # Mining server queries
+  miningServers: [MiningServerView!]!
+  miningServersByProtocol(protocol: ProtocolType!): [MiningServerView!]!
+  miningServerMetrics(serverId: ID!): ServerMetrics!
+  miningActivity: MiningActivityView!
+  miningRewards(from: DateTime, to: DateTime): [MiningRewardView!]!
+  serverMiningMetrics(serverId: ID!): ServerMiningMetrics!
+  miningStats: MiningStats!
+
+  # Get all servers grouped by protocol with sorting
+  allServersByProtocol(
+    sortBy: SortType
+    ascending: Boolean = true
+  ): ServersByProtocol!
+
+  # Get servers by protocol with sorting
+  serversByProtocol(
+    protocol: ProtocolType!
+    sortBy: SortType
+    ascending: Boolean = true
+  ): [MiningServerView!]!
+
+  # Get total statistics
+  serverStats: ServerStats!
+
+  # User queries
+  myConnectionStats(
+    from: DateTime
+    to: DateTime
+    page: Int = 0
+    size: Int = 10
+  ): ConnectionStatsPage!
+
+  myConnectionDashboard: UserConnectionDashboard!
+
+  myServerUsageStats(
+    serverId: ID!
+    from: DateTime
+    to: DateTime
+  ): ServerUsageStats!
+
+  # Admin queries
+  userConnectionStats(
+    userId: ID!
+    from: DateTime
+    to: DateTime
+    page: Int = 0
+    size: Int = 10
+  ): ConnectionStatsPage!
+
+  # Admin queries
+  networkAnalytics(from: DateTime, to: DateTime): NetworkAnalytics!
+
+  # Admin export queries
+  exportDetailedStats(from: DateTime!, to: DateTime!, userId: ID): String! # Base64 encoded CSV
+  exportAggregateStats(
+    from: DateTime!
+    to: DateTime!
+    period: AggregationPeriod!
+    userId: ID
+  ): String! # Base64 encoded CSV
+  adminDashboard: AdminDashboardView!
+
+  # User historical data
+  myHistoricalStats(
+    period: AggregationPeriod!
+    from: DateTime!
+    to: DateTime!
+  ): HistoricalStatsView!
+
+  # Admin queries
+  userHistoricalStats(
+    userId: ID!
+    period: AggregationPeriod!
+    from: DateTime!
+    to: DateTime!
+  ): HistoricalStatsView!
+
+  serverHistoricalStats(
+    serverId: ID!
+    period: AggregationPeriod!
+    from: DateTime!
+    to: DateTime!
+  ): HistoricalStatsView!
+
+  # Add webhook queries to the existing Query type
+  getWebhookConfigurations: [WebhookConfiguration!]!
+  getWebhookConfiguration(id: ID!): WebhookConfiguration
+  getWebhookDeliveries(
+    configId: ID!
+    page: Int!
+    size: Int!
+  ): [WebhookDelivery!]!
+
+  #Notification
+  whatsAppStatus: WhatsAppStatus!
+  isDripCampaignRunning: Boolean
+  getNotificationSettings: NotificationSettings
+
+  # Telegram Status
+  telegramStatus: TelegramStatus!
+
+  # Get user messaging preferences
+  getMessagingPreferences: MessagingPreferences!
+
+  # Get all users with Telegram enabled
+  getUsersWithTelegram: [UserView!]!
+
+  # Get all users with WhatsApp enabled
+  getUsersWithWhatsApp: [UserView!]!
+
+  getMessageTemplates: [MessageTemplate!]!
+  getMessageTemplate(id: ID!): MessageTemplate
+
+  # Message Tracking
+  getMessageStatus(messageId: String!): MessageDeliveryStatus
+  getUserMessageHistory(userId: Int!): [MessageDeliveryStatus!]!
+
+  # Admin notification queries
+  getUserNotificationPreferences(userId: ID!): NotificationPreferences!
+  getAllUserNotificationPreferences(
+    page: Int = 0
+    size: Int = 20
+  ): NotificationPreferencesPage!
+  getNotificationStats: NotificationStats!
+
+  # Rate Limits
+  getWhatsAppRateLimit(phoneNumber: String!): Int!
+  getTelegramRateLimit(chatId: String!): Int!
+
+  getTelegramMessages(page: Int, size: Int): [TelegramMessage!]!
+
+  getTelegramMessagesByUser(
+    userId: ID!
+    page: Int
+    size: Int
+  ): [TelegramMessage!]!
+
+  getNotificationPreferences: NotificationPreferences!
+
+  # Email Unsubscribe Admin Queries
+  getUnsubscribeStats(daysBack: Int = 30): UnsubscribeStats!
+  getUnsubscribedUsers: [UnsubscribedUser!]!
+  getUserEmailPreferences(userId: ID!): EmailPreferencesInfo!
+
+  # User profile queries
+  user: UserView
+  userProfile: UserProfileView
+  userSubscription: UserSubscriptionView
+  userLoginDetail(userId: ID!): UserLoginDetail!
+  # Admin endpoint - TODO: Remove when old app is retired
+  adminGetUserLoginDetail(userId: Int!): UserLoginDetail!
+
+  getAllUserRoles: [RoleView]
+
+  # Client Metadata queries (Admin only)
+  "Get client metadata for a specific user"
+  getUserClientMetadata(userId: Int!, page: Int = 0, size: Int = 20): ClientMetadataPage!
+  "Get signup metadata for a user (first signup event)"
+  getUserSignupMetadata(userId: Int!): ClientMetadataView
+  "Search client metadata with filters"
+  searchClientMetadata(
+    userId: Int
+    eventType: String
+    platform: String
+    countryCode: String
+    startDate: LocalDateTime
+    endDate: LocalDateTime
+    page: Int = 0
+    size: Int = 20
+  ): ClientMetadataPage!
+  "Get client metadata analytics for a date range"
+  getClientMetadataStats(startDate: LocalDateTime!, endDate: LocalDateTime!): ClientMetadataStats!
+  "Get user security summary - login activity for the last 30 days"
+  getUserSecuritySummary(userId: Int!): UserSecuritySummaryView!
+
+  gateways: [GatewayView]
+  serviceGroup(id: Int!): ServiceGroupView
+  serviceGroups: [ServiceGroupView]
+  group(id: Int): GroupView
+  groups(serviceGroupId: Int!): [GroupView]
+  registrationGroups: [GroupView]
+  allGroups: [GroupView]
+
+  server(id: Int!): ServerView
+  servers: [ServerView]
+  clientServers: [ClientServerView]
+  getClientSortedServers(
+    sortBy: String!
+    parameter: String!
+  ): [ClientServerView]
+
+  reseller(id: Int!): ResellerView
+  resellers: [ResellerView]
+  getResellersLevels: [ResellerLevelView]
+  getResellersCredits: [ResellerCreditView]
+  getResellerLevelCoefficients: ResellerLevelCoefficientsView
+  totalResellersCredit: String
+  resellerGetUser(id: Int): UserView
+  resellerGetUserByEmail(email: String!): UserView
+  resellerGetUserByUsername(username: String): UserView
+  resellerGetUserById(id: Int): UserView
+  resellerGetUsers(page: Int, size: Int): UserPage
+  resellerGetExpiredUsers(page: Int, size: Int): UserPage
+  getResellerScoreLimits: [ResellerScoreLimit]
+
+  """
+  Get detailed score breakdown for a reseller.
+  Shows all component scores and values for transparency.
+  Admin only.
+  """
+  getResellerScoreBreakdown(resellerId: Int!): ResellerScoreBreakdown
+
+  geolocations: [GeolocationView]
+  geolocationByName(name: String!): GeolocationView
+
+  news: [NewsView]!
+  newsById(id: Int): NewsView!
+
+  files: [FileView]
+  file(id: Int): FileView!
+
+  ticket(id: Int): TicketView
+  tickets(
+    page: Int
+    size: Int
+    category: TicketCategory
+    status: TicketStatus
+  ): TicketPage
+  userTickets: [TicketView]
+  getUserTickets(userId: Int!): [TicketView]
+
+  accounting: AccountingView
+  totalActiveUsers: Int
+  activeUsers(page: Int, size: Int): UserPage
+  inactiveUsers(page: Int, size: Int): UserPage
+  allUsers(
+    sort: Boolean
+    page: Int
+    size: Int
+    param: String
+    query: String
+  ): UserPage
+
+  # Advanced filtered users query
+  filteredUsers(
+    page: Int!
+    size: Int!
+    sortBy: String
+    ascending: Boolean
+    searchQuery: String
+    filters: UserFilterInput
+  ): UserPage
+
+  #Connections and devices
+  getConnectionHistory(userId: Int!): [ConnectionHistoryView]
+  getOnlineSessions(userId: Int!): [OnlineSessionView]
+  getOnlineUsers(
+    page: Int
+    size: Int
+    serverId: Int
+    groupId: Int
+    roleId: Int
+    serviceGroupId: Int
+  ): UserPage
+  getDevices(userId: Int!): [DeviceView]
+  getDevicesByEmail(email: String!): [DeviceView]
+
+  # Extra Logins
+  extraLoginPlans(type: String): [ExtraLoginsPlan!]!
+  extraLoginPlan(id: ID!): ExtraLoginsPlan
+  userExtraLogins: [UserExtraLogins!]!
+  calculateExtraLoginPrice(planId: ID!, quantity: Int!): PriceCalculation!
+
+  """
+  Calculate pro-rata price for adding devices to current user's subscription.
+  Returns detailed pricing breakdown.
+  """
+  calculateDeviceAddonPrice(deviceCount: Int!): DevicePriceCalculation!
+
+  """
+  Calculate pro-rata price for reseller to add devices to a user.
+  Includes reseller level discount.
+  Admin/Reseller only.
+  """
+  calculateResellerDevicePrice(userId: Int!, deviceCount: Int!): DevicePriceCalculation!
+
+  """
+  Get device usage statistics for the current user.
+  """
+  getDeviceUsageStats: DeviceUsageStats!
+
+  """
+  Get device usage statistics for a specific user.
+  Admin/Reseller only.
+  """
+  getUserDeviceStats(userId: Int!): DeviceUsageStats!
+
+  """
+  Get reseller device revenue report.
+  Admin/Reseller only.
+  """
+  getResellerDeviceRevenue(resellerId: Int, startDate: LocalDateTime, endDate: LocalDateTime): ResellerDeviceRevenue!
+
+  # Gift Card queries
+  getValidGiftCards: [GiftCard!]!
+  getGiftCardsByGroup(groupId: Int!): [GiftCard!]!
+  getGiftCardByCode(code: String!): GiftCard
+
+  #Stripe Payment
+  getUserStripeSubscriptions: [StripeSubscription!]
+
+  # Token balance queries
+  getTokenBalance: TokenBalance!
+  getTokenTransactions(
+    startDate: LocalDateTime!
+    endDate: LocalDateTime!
+  ): [TokenTransaction!]!
+  getTokenRates(region: String): [TokenRate!]!
+
+  # Daily stats and limits
+  getDailyStats: DailyStats!
+  getRemainingLimits: RemainingLimits!
+  hasDailySubscription: Boolean!
+  getMyDailyStats: DailyStats!
+  getMyRemainingLimits: RemainingLimits!
+  hasMyDailySubscription: Boolean!
+
+  # Admin queries
+  getUserDailyStats(userId: ID!): DailyStats!
+  getUserRemainingLimits(userId: ID!): RemainingLimits!
+  hasUserDailySubscription(userId: ID!): Boolean!
+  getGlobalTokenStats: GlobalTokenStats!
+  getAllUserTokenStats(
+    page: Int = 0
+    size: Int = 20
+    sortBy: String = "lastActivity"
+    ascending: Boolean = false
+  ): [UserTokenStats!]!
+  searchUserTokenStats(
+    searchTerm: String!
+    page: Int = 0
+    size: Int = 20
+  ): [UserTokenStats!]!
+
+  # Staking queries
+  getAllStakingConfigs: [TokenStakingConfig!]!
+  getStakingConfig(id: ID!): TokenStakingConfig
+  getMyStakingOptions: [TokenStakingConfig!]!
+  getMyActiveStakes: [TokenStake!]!
+  getMyStakingStats: StakingStats!
+  getGlobalStakingStats: StakingStats!
+  getUserStakingStats(userId: Int!): StakingStats!
+
+  # Admin token queries for specific user
+  getUserTokenBalance(userId: Int!): TokenBalance
+  getUserTokenTransactions(userId: Int!, limit: Int): [TokenTransaction!]!
+
+  #ReferralCode
+  getReferralCode: ReferralCodeView
+  getUserById(id: Int): UserView
+
+  #Invoice
+  allInvoices: [InvoiceResponse]
+  getInvoiceById(invoiceId: Int!): InvoiceResponse
+  getInvoiceByPaymentId(paymentId: Int!): InvoiceResponse
+  getInvoiceByDateRange(beginDate: String!, endDate: String!): [InvoiceResponse]
+
+  #Transactions
+  allTransactions(page: Int!, size: Int!): TransactionPage!
+
+  #Analytics
+  userStatsByCountry: [UserStatsByCountryView!]!
+
+  #User Device
+  getActiveDevices: [UserDeviceView]
+  resellerGetActiveDevices(userId: Int): [UserDeviceView]
+
+  #IP List
+  getBlacklistedIPs: [Blacklist!]!
+  getWhitelistedIPs: [Whitelist!]!
+
+  #Package Price
+  getPackagePrice(groupId: Int!): PackagePrice
+  getPackagePrice3(groupId: Int!): PackagePrice3
+  getPackagePrice6(groupId: Int!): PackagePrice6
+  getPackagePrice12(groupId: Int!): PackagePrice12
+  getPackagePrice24(groupId: Int!): PackagePrice24
+  getPackagePrice36(groupId: Int!): PackagePrice36
+  getPackagePriceLifetime(groupId: Int!): PackagePriceLifetime
+  calculateDiscountedPriceByDuration(groupId: Int!): PriceView
+
+  #Check trial eligibility. All parameters are optional. If no parameters provided, checks current user. Admin only when userId/username is provided.
+  checkTrialEligibility(
+    deviceId: String
+    userId: Int
+    username: String
+  ): TrialEligibilityResponse!
+
+  # ========== SERVER LIST (For Users) ==========
+
+  # Get all online OrbMesh servers - called once and cached in app
+  #  Returns lightweight info for server browsing
+  getAllOrbMeshServers: [OrbMeshServerInfo!]!
+
+  # Get all OrbMesh servers with sorting (legacy endpoint)
+  orbmeshServers(sortBy: SortType, ascending: Boolean): [OrbMeshServerView!]!
+
+  # Get best OrbMesh server based on load
+  bestOrbMeshServer: OrbMeshServerView!
+
+  # Get OrbMesh config for a specific server
+  orbmeshConfig(serverId: ID!): OrbMeshConfig!
+
+  # ========== ADMIN ENDPOINTS ==========
+
+  # Get all servers (admin only - includes offline/disabled)
+  allOrbMeshServers: [OrbMeshServerView!]!
+
+  # ========== WIREGUARD ENDPOINTS ==========
+
+  # Get WireGuard config for specific OrbMesh server
+  # Only call this when user actually connects
+  getOrbMeshWireGuardConfig(orbmeshServerId: ID!): OrbMeshWireGuardConfigResponse!
+
+  #  List all user's OrbMesh WireGuard configs
+  myOrbMeshWireGuardConfigs: [OrbMeshWireGuardConfigResponse!]!
+
+  # ========== WIREGUARD EXPORT ENDPOINTS ==========
+
+  # Check if third-party WireGuard clients are allowed
+  wireGuardExportStatus: WireGuardExportStatus!
+
+  # Get WireGuard config export for a specific config (QR code + .conf file)
+  getWireGuardExport(configId: ID!): WireGuardExportData!
+
+  # Get all WireGuard config exports for current user
+  myWireGuardExports: [WireGuardExportData!]!
+
+  # Admin: Get WireGuard exports for a specific user
+  getUserWireGuardExports(userId: Int!): [WireGuardExportData!]!
+
+  # ========== VLESS ENDPOINTS ==========
+
+  # Get VLESS config for specific OrbMesh server
+  # Only call this when user actually connects via VLESS
+  getOrbMeshVlessConfig(orbmeshServerId: ID!): OrbMeshVlessConfigResponse!
+
+  # List all user's OrbMesh VLESS configs
+  myOrbMeshVlessConfigs: [OrbMeshVlessConfigView!]!
+
+  # List active VLESS configs for current user
+  myActiveOrbMeshVlessConfigs: [OrbMeshVlessConfigView!]!
+
+  # ========== CONNECTION STATUS ENDPOINT ==========
+
+  # Check if current user can connect (subscription valid + device slots available)
+  # Call this before attempting to connect to show user-friendly error messages
+  orbmeshConnectionStatus: OrbMeshConnectionStatus!
+
+  # ========== BANDWIDTH ENDPOINTS ==========
+
+  # Get current user's bandwidth usage status
+  orbmeshBandwidthStatus: OrbMeshBandwidthStatus!
+
+  # Get per-protocol bandwidth usage (WireGuard vs VLESS)
+  orbmeshProtocolBandwidthUsage(from: String, to: String): OrbMeshProtocolBandwidthUsage!
+
+  # Get available bandwidth addon products
+  orbmeshBandwidthProducts: [OrbMeshBandwidthProduct!]!
+
+  # Get user's bandwidth addon purchase history
+  myBandwidthAddons: [OrbMeshBandwidthAddon!]!
+
+  # ========== ADMIN BANDWIDTH ENDPOINTS ==========
+
+  # Admin: Get specific user's bandwidth status
+  adminGetUserBandwidthStatus(userId: Int!): OrbMeshBandwidthStatus!
+
+  # Admin: Get specific user's bandwidth usage by protocol
+  adminGetUserProtocolBandwidth(userId: Int!, from: String, to: String): OrbMeshProtocolBandwidthUsage!
+
+  # Admin: Get specific user's bandwidth addon history
+  adminGetUserBandwidthAddons(userId: Int!): [OrbMeshBandwidthAddon!]!
+
+  # Admin: List all bandwidth addon purchases (paginated)
+  adminAllBandwidthAddons(page: Int!, size: Int!): BandwidthAddonPage!
+
+  # Admin: Get bandwidth usage report for all users
+  adminBandwidthUsageReport(from: String, to: String): BandwidthUsageReport!
+
+  # Admin: Get users with exceeded bandwidth
+  adminUsersExceededBandwidth(page: Int!, size: Int!): UserBandwidthPage!
+
+  # Admin: Get users with bandwidth warnings (>80% usage)
+  adminUsersNearBandwidthLimit(page: Int!, size: Int!): UserBandwidthPage!
+
+  # ========== GLOBAL SETTINGS ENDPOINTS ==========
+
+  # Get global settings (admin only)
+  getGlobalSettings: GlobalSettingsView!
+
+  # ========== STATIC IP ENDPOINTS ==========
+
+  # Get complete static IP dashboard for current user
+  staticIPDashboard: StaticIPDashboard!
+
+  # Get available static IP plans
+  staticIPPlans: [StaticIPPlan!]!
+
+  # Get available regions with capacity info
+  staticIPRegions: [RegionAvailability!]!
+
+  # Get user's current static IP subscription
+  myStaticIPSubscription: StaticIPSubscription
+
+  # Get user's static IP allocations
+  myStaticIPAllocations: [StaticIPAllocation!]!
+
+  # Get specific allocation details
+  staticIPAllocation(allocationId: ID!): StaticIPAllocation
+
+  # Get port forward rules for an allocation
+  portForwardRules(allocationId: ID!): [PortForwardRule!]!
+
+  # Get port forward limits for an allocation
+  portForwardLimits(allocationId: ID!): PortForwardLimits!
+
+  # Get user's port forward addons
+  myPortForwardAddons(allocationId: ID!): [PortForwardAddon!]!
+
+  # Get available port forward addon plans
+  portForwardAddonPlans: [PortForwardAddonPlan!]!
+
+  # ========== STATIC IP ADMIN ENDPOINTS ==========
+
+  # Admin: Get static IP statistics
+  adminStaticIPStats: StaticIPAdminStats!
+
+  # Admin: Get user's static IP subscription
+  adminGetUserStaticIPSubscription(userId: Int!): StaticIPSubscription
+
+  # Admin: Get user's static IP allocations
+  adminGetUserStaticIPAllocations(userId: Int!): [StaticIPAllocation!]!
+
+  # Admin: Get all static IP pool stats by region
+  adminStaticIPPoolStats: [StaticIPPoolStats!]!
+}

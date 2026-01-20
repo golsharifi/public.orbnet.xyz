@@ -1,0 +1,188 @@
+input ScheduleEmailRequest {
+  email: String
+  subject: String
+  body: String
+  dateTime: LocalDateTime
+  timeZone: String
+}
+
+type NotificationSettings {
+  batchSize: Int
+  delayBetweenBatches: Int
+}
+
+type TelegramStatus {
+  connected: Boolean!
+  username: String
+  chatId: String
+}
+
+type MessagingPreferences {
+  enableWhatsApp: Boolean!
+  enableTelegram: Boolean!
+  enableEmail: Boolean!
+  enableSMS: Boolean!
+}
+
+type TelegramMessage {
+  id: ID!
+  userId: ID!
+  message: String!
+  timestamp: DateTime!
+  direction: MessageDirection!
+  status: MessageStatus!
+  adminUsername: String
+}
+
+# Input Types
+input TelegramConfigInput {
+  username: String!
+  chatId: String!
+}
+
+input MessagingPreferencesInput {
+  enableWhatsApp: Boolean!
+  enableTelegram: Boolean!
+  enableEmail: Boolean!
+  enableSMS: Boolean!
+}
+
+type WhatsAppStatus {
+  connected: Boolean!
+  qrCode: String
+  qrCodeSvg: String
+  qrCodeAge: Int
+  qrCodeExpired: Boolean
+}
+
+type MessageDeliveryStatus {
+  messageId: String!
+  userId: String!
+  channel: String!
+  status: String!
+  sentAt: String!
+  deliveredAt: String
+  readAt: String
+  errorMessage: String
+}
+
+type MessageTemplate {
+  id: ID!
+  name: String!
+  content: String!
+  variables: [String!]!
+}
+
+input MessageTemplateInput {
+  name: String!
+  content: String!
+  variables: [String!]!
+}
+
+type NotificationPreferences {
+  enabledChannels: [NotificationChannel!]!
+  enabledCategories: [NotificationCategory!]!
+  dndEnabled: Boolean!
+  dndStartTime: String
+  dndEndTime: String
+  timezone: String!
+  emailUnsubscribed: Boolean!
+  unsubscribedAt: DateTime
+  resubscribedAt: DateTime
+}
+
+type NotificationPreferencesPage {
+  content: [NotificationPreferencesWithUser!]!
+  totalElements: Int!
+  totalPages: Int!
+  hasNext: Boolean!
+}
+
+type NotificationPreferencesWithUser {
+  userId: ID!
+  userEmail: String!
+  preferences: NotificationPreferences!
+}
+
+type NotificationStats {
+  totalNotificationsSent: Int!
+  notificationsByChannel: [NotificationChannelStat!]!
+  notificationsByCategory: [NotificationCategoryStat!]!
+  failedNotifications: Int!
+}
+
+type NotificationChannelStat {
+  channel: NotificationChannel!
+  count: Int!
+  successRate: Float!
+}
+
+type NotificationCategoryStat {
+  category: NotificationCategory!
+  count: Int!
+}
+
+input NotificationPreferencesInput {
+  enabledChannels: [NotificationChannel!]!
+  enabledCategories: [NotificationCategory!]!
+  dndEnabled: Boolean
+  dndStartTime: String
+  dndEndTime: String
+  timezone: String
+}
+
+enum NotificationCategory {
+  BILLING
+  SECURITY
+  SUPPORT
+  PROMOTIONAL
+  SYSTEM
+  ACCOUNT
+  SUBSCRIPTION
+}
+
+enum NotificationChannel {
+  EMAIL
+  WHATSAPP
+  TELEGRAM
+  SMS
+  FCM
+}
+
+enum MessageDirection {
+  INCOMING
+  OUTGOING
+}
+
+enum MessageStatus {
+  RECEIVED
+  SENT
+  READ
+  REPLIED
+}
+
+# Email Unsubscribe Types
+type UnsubscribeStats {
+  totalUnsubscribes: Int!
+  globalUnsubscribes: Int!
+  byCategoryCount: [CategoryUnsubscribeCount!]!
+  periodDays: Int!
+}
+
+type CategoryUnsubscribeCount {
+  category: NotificationCategory!
+  count: Int!
+}
+
+type UnsubscribedUser {
+  userId: ID!
+  email: String!
+  unsubscribedAt: DateTime
+}
+
+type EmailPreferencesInfo {
+  emailUnsubscribed: Boolean!
+  enabledCategories: [NotificationCategory!]!
+  unsubscribedAt: DateTime
+  resubscribedAt: DateTime
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title th:text="#{email.subscription.expired.title}">Subscription Expired</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f3f4f6;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <tr>
+                        <td style="padding: 48px 48px 40px 48px;">
+                            <div th:replace="~{fragments/header :: header(${userName})}"></div>
+
+                            <!-- Expired Icon -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 24px;">
+                                <tr>
+                                    <td align="center">
+                                        <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 16px; line-height: 64px; text-align: center; display: inline-block;">
+                                            <span style="font-size: 28px; color: #ffffff;">&#x26A0;</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Main Heading -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 16px;">
+                                <tr>
+                                    <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 24px; font-weight: 700; color: #111827; line-height: 32px;"
+                                        th:text="#{email.subscription.expired.title}">
+                                        Subscription Expired
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Expired Message -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 32px;">
+                                <tr>
+                                    <td align="center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 16px; color: #6b7280; line-height: 26px;"
+                                        th:text="#{email.subscription.expired.message(${daysAgo})}">
+                                        Your subscription expired X days ago.
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Expired Card -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #fef2f2; border-radius: 12px; border-left: 4px solid #ef4444; margin-bottom: 32px;">
+                                <tr>
+                                    <td style="padding: 20px 24px;">
+                                        <span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 15px; color: #991b1b; line-height: 24px;">
+                                            Your VPN access has been suspended. Renew your subscription to restore secure browsing.
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- CTA Button -->
+                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 32px;">
+                                <tr>
+                                    <td align="center">
+                                        <a href="https://orbvpn.com/pricing" style="display: inline-block; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 16px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
+                                            Renew Now
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <div th:replace="~{fragments/footer :: footer}"></div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

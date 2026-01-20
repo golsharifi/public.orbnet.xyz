@@ -1,0 +1,4 @@
+type PackagePrice3 {
+  groupId: Int!
+  price: Float!
+}

@@ -1,0 +1,155 @@
+# Client Metadata types for tracking device, location, and platform information
+# This is designed to work universally with web, mobile (Flutter), and desktop apps
+
+# Input type for client-provided metadata
+# All fields are optional - clients send whatever data they have available
+# The server automatically enriches this with IP geolocation and request headers
+input ClientMetadataInput {
+    # Platform & OS
+    platform: String          # WEB, IOS, ANDROID, WINDOWS, MACOS, LINUX
+    osName: String            # e.g., "Windows", "macOS", "iOS", "Android"
+    osVersion: String         # e.g., "14.0", "11", "10.15.7"
+
+    # Device Information
+    deviceType: String        # MOBILE, TABLET, DESKTOP, TV, UNKNOWN
+    deviceManufacturer: String # e.g., "Apple", "Samsung", "Google"
+    deviceModel: String       # e.g., "iPhone 15 Pro", "Galaxy S24"
+    deviceId: String          # Unique device identifier (hashed for privacy)
+    screenResolution: String  # e.g., "1920x1080", "390x844"
+
+    # Browser Information (Web only)
+    browserName: String       # e.g., "Chrome", "Firefox", "Safari"
+    browserVersion: String    # e.g., "120.0.6099.109"
+    userAgent: String         # Full user agent string
+
+    # App Information (Mobile/Desktop apps)
+    appVersion: String        # e.g., "1.2.3", "2.0.0-beta"
+    appBuild: String          # e.g., "123", "456"
+    appIdentifier: String     # e.g., "com.orbvpn.app"
+
+    # Language & Locale
+    language: String          # e.g., "en-US", "fa-IR", "nl-NL"
+    acceptedLanguages: String # Comma-separated list
+    locale: String            # e.g., "en_US", "fa_IR"
+    timezone: String          # e.g., "America/Los_Angeles", "Asia/Tehran"
+
+    # Network Information (Mobile apps)
+    connectionType: String    # WIFI, MOBILE, ETHERNET, VPN, NONE
+    carrierName: String       # e.g., "Verizon", "AT&T", "Irancell"
+    mobileNetworkType: String # e.g., "4G", "5G", "LTE"
+
+    # Marketing Attribution
+    referrer: String          # Referrer URL
+    utmSource: String         # UTM source
+    utmMedium: String         # UTM medium
+    utmCampaign: String       # UTM campaign
+    sessionId: String         # Session ID for tracking
+
+    # Push Notifications
+    fcmToken: String          # FCM token for push notifications
+
+    # Extensibility
+    extraData: String         # Additional JSON data
+}
+
+# View type for stored client metadata
+type ClientMetadataView {
+    id: ID!
+    userId: Int
+    userEmail: String
+
+    # Event
+    eventType: String!        # SIGNUP, LOGIN, APP_OPEN, etc.
+
+    # IP & Location (auto-detected by server)
+    ipAddress: String
+    countryCode: String
+    countryName: String
+    region: String
+    city: String
+    latitude: Float
+    longitude: Float
+    timezone: String
+    isp: String
+
+    # Network
+    connectionType: String
+    carrierName: String
+    mobileNetworkType: String
+
+    # Platform & OS
+    platform: String
+    osName: String
+    osVersion: String
+
+    # Device
+    deviceType: String
+    deviceManufacturer: String
+    deviceModel: String
+    screenResolution: String
+
+    # Browser
+    browserName: String
+    browserVersion: String
+    userAgent: String
+
+    # App
+    appVersion: String
+    appBuild: String
+    appIdentifier: String
+
+    # Language
+    language: String
+    acceptedLanguages: String
+    locale: String
+
+    # Marketing
+    referrer: String
+    utmSource: String
+    utmMedium: String
+    utmCampaign: String
+
+    # Timestamps
+    createdAt: LocalDateTime!
+}
+
+# Analytics aggregation types
+type ClientMetadataStats {
+    countryStats: [CountStat!]!
+    platformStats: [CountStat!]!
+    osStats: [CountStat!]!
+    browserStats: [CountStat!]!
+    languageStats: [CountStat!]!
+}
+
+type CountStat {
+    key: String!
+    count: Int!
+}
+
+# Paginated response
+type ClientMetadataPage {
+    content: [ClientMetadataView!]!
+    totalElements: Int!
+    totalPages: Int!
+    page: Int!
+    size: Int!
+}
+
+# User security summary for login activity monitoring
+type UserSecuritySummaryView {
+    # Counts for last 30 days
+    uniqueIPsLast30Days: Int!
+    uniqueCountriesLast30Days: Int!
+    uniqueDevicesLast30Days: Int!
+
+    # Recent activity lists
+    recentIPs: [String!]!
+    recentCountries: [String!]!
+    recentDeviceFingerprints: [String!]!
+
+    # Last login details
+    lastLoginTime: LocalDateTime
+    lastLoginIP: String
+    lastLoginCountry: String
+}

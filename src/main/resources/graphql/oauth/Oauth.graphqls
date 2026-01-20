@@ -1,0 +1,25 @@
+enum SocialMedia {
+    GOOGLE, FACEBOOK, APPLE, TWITTER, AMAZON, LINKEDIN, GITHUB
+}
+
+# OAuth Connection View for admin management
+type OAuthConnectionView {
+    id: ID!
+    provider: SocialMedia!
+    createdAt: String
+    updatedAt: String
+}
+
+# ========== EXTEND QUERY ==========
+
+extend type Query {
+    # Admin: Get OAuth connections for a specific user
+    userOAuthConnections(userId: Int!): [OAuthConnectionView!]!
+}
+
+# ========== EXTEND MUTATION ==========
+
+extend type Mutation {
+    # Admin: Delete a user's OAuth connection
+    deleteUserOAuthConnection(userId: Int!, connectionId: ID!): Boolean!
+}

@@ -1,0 +1,485 @@
+# ========== TYPES FOR APP CACHING ==========
+
+# Lightweight server info for caching in app
+# Returns only essential data for server selection
+type OrbMeshServerInfo {
+  id: ID!
+  name: String!
+  region: String!
+  location: String!
+  country: String!
+  endpoint: String! # DNS hostname (stable)
+  hostname: String # Same as endpoint
+  ipAddress: String # For debugging/fallback
+  port: Int!
+  wireguardPort: Int!
+  wireguardPublicKey: String
+  vlessPort: Int # VLESS port (usually 8443)
+  realityPublicKey: String # Reality public key for VLESS
+  realitySNI: String # Reality SNI (e.g., www.microsoft.com)
+  protocols: [String!]!
+  maxConnections: Int!
+  currentConnections: Int!
+  status: String!
+  isOnline: Boolean!
+  createdAt: String!
+}
+
+# WireGuard config response (only when connecting)
+# Contains all info needed to establish WireGuard tunnel
+type OrbMeshWireGuardConfigResponse {
+  privateKey: String!
+  publicKey: String
+  allocatedIP: String!
+  serverEndpoint: String! # DNS hostname for connection
+  serverPort: Int!
+  serverPublicKey: String
+  dns: [String!]!
+  mtu: Int!
+  persistentKeepalive: Int!
+  createdAt: String!
+}
+
+# ========== DETAILED SERVER VIEW ==========
+
+# Complete OrbMesh Server view for admin and detailed queries
+type OrbMeshServerView {
+  id: ID!
+  name: String!
+  region: String!
+  hostname: String
+  ipAddress: String
+  port: Int!
+  location: String!
+  country: String!
+  countryCode: String
+  protocols: [String!]!
+  quantumSafe: Boolean!
+  online: Boolean!
+  enabled: Boolean!
+  currentConnections: Int!
+  maxConnections: Int!
+  bandwidthLimitMbps: Int
+  cpuUsage: Float
+  memoryUsage: Float
+  latencyMs: Int
+  version: String
+  publicKey: String
+  vlessPort: Int
+  realityPublicKey: String
+  realitySNI: String
+  tlsFingerprint: String
+  lastHeartbeat: String
+  createdAt: String!
+  updatedAt: String!
+  # Bridge support fields
+  bridgeCapable: Boolean
+  bridgePriority: Int
+  bridgeMaxSessions: Int
+}
+
+# ========== INPUT TYPES ==========
+
+# Input for registering/updating OrbMesh server
+input OrbMeshServerInput {
+  name: String
+  region: String
+  hostname: String
+  ipAddress: String
+  port: Int
+  location: String
+  country: String
+  protocols: [String!]
+  maxConnections: Int
+  bandwidthLimitMbps: Int
+  publicKey: String
+  tlsCertificate: String
+  # Bridge support fields
+  bridgeCapable: Boolean
+  bridgePriority: Int
+  bridgeMaxSessions: Int
+}
+
+# Server metrics input
+input OrbMeshServerMetricsInput {
+  currentConnections: Int!
+  cpuUsage: Float!
+  memoryUsage: Float!
+  latencyMs: Int
+}
+
+# Usage tracking input
+input OrbMeshUsageInput {
+  userId: ID!
+  serverId: ID!
+  protocol: String!
+  bytesSent: Int!
+  bytesReceived: Int!
+  duration: Int!
+  sessionId: String
+  disconnectedAt: DateTime
+}
+
+# ========== RESULT TYPES ==========
+
+# Server registration result with credentials
+# Only time API key and JWT secret are visible
+type OrbMeshServerRegistrationResult {
+  server: OrbMeshServerView!
+  apiKey: String!
+  jwtSecret: String!
+}
+
+# OrbMesh server configuration
+type OrbMeshConfig {
+  serverId: ID!
+  endpoint: String!
+  port: Int!
+  publicKey: String
+  protocols: [String!]!
+  tlsFingerprint: String
+  quantumSafe: Boolean!
+  region: String!
+}
+
+# Usage recording result
+type OrbMeshUsageResult {
+  success: Boolean!
+  usageId: ID
+  message: String
+}
+
+# ========== GLOBAL SETTINGS ==========
+
+# Global system settings (admin-configurable)
+type GlobalSettingsView {
+  id: ID!
+  allowThirdPartyWireGuardClients: Boolean!
+  showWireGuardPrivateKeys: Boolean!
+  maxWireGuardConfigsPerUser: Int!
+  createdAt: String
+  updatedAt: String
+}
+
+# Input for updating global settings
+input GlobalSettingsInput {
+  allowThirdPartyWireGuardClients: Boolean
+  showWireGuardPrivateKeys: Boolean
+  maxWireGuardConfigsPerUser: Int
+}
+
+# ========== WIREGUARD EXPORT TYPES ==========
+
+# WireGuard config export data with QR code and .conf file content
+type WireGuardExportData {
+  configId: ID!
+  serverName: String!
+  serverLocation: String!
+  serverCountry: String
+  configFile: String!        # Standard WireGuard .conf file content
+  qrCodeImage: String!       # Base64 encoded PNG image (data:image/png;base64,...)
+  privateKey: String         # Only if showWireGuardPrivateKeys is enabled
+  publicKey: String!
+  allocatedIp: String!
+  serverEndpoint: String!
+  serverPort: Int!
+  serverPublicKey: String
+  dns: String!
+  mtu: Int!
+  persistentKeepalive: Int!
+}
+
+# Response for checking if third-party WireGuard clients are allowed
+type WireGuardExportStatus {
+  allowed: Boolean!
+  message: String
+}
+
+# Input for syncing WireGuard config from mobile app
+input SyncOrbMeshWireGuardConfigInput {
+  serverId: ID!
+  publicKey: String!
+  privateKey: String!
+  allocatedIp: String!
+  serverPublicKey: String
+}
+
+# Result of syncing WireGuard config
+type SyncOrbMeshWireGuardConfigResult {
+  success: Boolean!
+  configId: ID
+  message: String
+}
+
+# ========== VLESS TYPES ==========
+
+# VLESS config response (for connecting via VLESS/Reality)
+# Contains all info needed to establish VLESS connection
+type OrbMeshVlessConfigResponse {
+  vlessUuid: String!           # VLESS protocol UUID for authentication
+  flow: String!                # Flow control type (xtls-rprx-vision)
+  encryption: String!          # Encryption method (none for VLESS)
+  security: String!            # Security type (reality, tls, none)
+  transport: String!           # Transport type (tcp, ws, grpc, quic)
+  serverEndpoint: String!      # DNS hostname for connection
+  serverPort: Int!             # HTTPS port (8443)
+  realityPublicKey: String     # Reality public key for TLS fingerprinting
+  realitySNI: String           # Reality SNI (e.g., www.microsoft.com)
+  active: Boolean!
+  createdAt: String!
+}
+
+# Detailed VLESS config view with server info
+type OrbMeshVlessConfigView {
+  id: ID!
+  vlessUuid: String!
+  flow: String!
+  encryption: String!
+  security: String!
+  transport: String!
+  serverEndpoint: String!
+  serverPort: Int!
+  serverName: String!
+  serverRegion: String!
+  serverCountry: String!
+  realityPublicKey: String
+  realitySNI: String
+  active: Boolean!
+  createdAt: String!
+  lastConnectedAt: String
+}
+
+# Input for syncing VLESS config from mobile app
+input SyncOrbMeshVlessConfigInput {
+  serverId: ID!
+  vlessUuid: String!
+  flow: String
+  security: String
+  transport: String
+}
+
+# Result of syncing VLESS config
+type SyncOrbMeshVlessConfigResult {
+  success: Boolean!
+  configId: ID
+  vlessUuid: String
+  message: String
+}
+
+# ========== CONNECTION STATUS ==========
+
+# Connection status for checking if user can connect
+type OrbMeshConnectionStatus {
+  hasSubscription: Boolean!
+  subscriptionValid: Boolean!
+  subscriptionExpiresAt: String
+  deviceLimit: Int!
+  activeConnections: Int!
+  remainingSlots: Int!
+  canConnect: Boolean!
+  message: String!
+}
+
+# ========== CONNECTION REPORTING (Server-to-Backend) ==========
+
+# Input for reporting connection start (from OrbMesh server)
+input OrbMeshConnectionStartInput {
+  userId: Int!
+  serverId: ID!
+  sessionId: String!
+  protocol: String!       # Mimicry protocol: teams, shaparak, doh, https
+  vpnProtocol: String     # VPN protocol: wireguard, vless
+  clientIp: String
+  clientPlatform: String
+}
+
+# Result of connection start report
+type OrbMeshConnectionStartResult {
+  success: Boolean!
+  message: String
+  connectionId: ID
+}
+
+# Input for reporting connection end (from OrbMesh server)
+input OrbMeshConnectionEndInput {
+  sessionId: String!
+  bytesSent: Long
+  bytesReceived: Long
+  disconnectReason: String
+}
+
+# Result of connection end report
+type OrbMeshConnectionEndResult {
+  success: Boolean!
+  message: String
+}
+
+# Result of batch connection report
+type OrbMeshConnectionBatchResult {
+  success: Boolean!
+  message: String
+  processedCount: Int!
+  failedCount: Int
+}
+
+# ========== BANDWIDTH TYPES ==========
+
+# Bandwidth status for checking quota usage
+type OrbMeshBandwidthStatus {
+  hasQuota: Boolean!
+  unlimited: Boolean!
+  quotaBytes: Long
+  usedBytes: Long!
+  remainingBytes: Long
+  addonBytes: Long
+  usagePercent: Float!
+  exceeded: Boolean!
+  warning: Boolean!
+  resetDate: String
+  message: String!
+  # Formatted values in GB
+  quotaGB: Float
+  usedGB: Float!
+  remainingGB: Float
+  addonGB: Float
+}
+
+# Per-protocol bandwidth usage
+type OrbMeshProtocolBandwidthUsage {
+  wireguardBytes: Long!
+  vlessBytes: Long!
+  totalBytes: Long!
+  wireguardGB: Float!
+  vlessGB: Float!
+  totalGB: Float!
+}
+
+# Bandwidth addon product
+type OrbMeshBandwidthProduct {
+  productId: String!
+  name: String!
+  gigabytes: Int!
+  priceUsd: Float!
+}
+
+# Bandwidth addon purchase record
+type OrbMeshBandwidthAddon {
+  id: ID!
+  productId: String!
+  bandwidthBytes: Long!
+  bandwidthGB: Float!
+  price: Float
+  currency: String
+  gateway: String
+  applied: Boolean!
+  appliedAt: String
+  isPromotional: Boolean!
+  createdAt: String!
+}
+
+# Input for purchasing bandwidth addon
+input OrbMeshBandwidthPurchaseInput {
+  productId: String!
+  purchaseToken: String!
+  orderId: String
+  gateway: String!
+  price: Float
+  currency: String
+}
+
+# Result of bandwidth addon purchase
+type OrbMeshBandwidthPurchaseResult {
+  success: Boolean!
+  message: String
+  addonId: ID
+  bandwidthBytes: Long
+  bandwidthGB: Float
+}
+
+# Input for granting promotional bandwidth (admin)
+input OrbMeshGrantBandwidthInput {
+  userId: Int!
+  bandwidthGB: Float!
+  notes: String
+}
+
+# ========== ADMIN BANDWIDTH TYPES ==========
+
+# Paginated bandwidth addon list for admin
+type BandwidthAddonPage {
+  content: [OrbMeshBandwidthAddon!]!
+  totalElements: Long!
+  totalPages: Int!
+  number: Int!
+  size: Int!
+}
+
+# User bandwidth summary for admin views
+type UserBandwidthSummary {
+  userId: Int!
+  email: String!
+  username: String
+  quotaBytes: Long
+  usedBytes: Long!
+  addonBytes: Long!
+  usagePercent: Float!
+  exceeded: Boolean!
+  warning: Boolean!
+  unlimited: Boolean!
+  subscriptionPlan: String
+  lastActivity: String
+}
+
+# Paginated user bandwidth list
+type UserBandwidthPage {
+  content: [UserBandwidthSummary!]!
+  totalElements: Long!
+  totalPages: Int!
+  number: Int!
+  size: Int!
+}
+
+# Overall bandwidth usage report
+type BandwidthUsageReport {
+  totalUsersWithQuota: Int!
+  totalUsersUnlimited: Int!
+  totalUsersExceeded: Int!
+  totalUsersWarning: Int!
+  totalBandwidthUsedBytes: Long!
+  totalBandwidthQuotaBytes: Long!
+  totalAddonsPurchased: Int!
+  totalAddonsRevenue: Float!
+  wireguardBandwidthBytes: Long!
+  vlessBandwidthBytes: Long!
+  topUsersByUsage: [UserBandwidthSummary!]!
+  periodStart: String
+  periodEnd: String
+}
+
+# Result of bandwidth reset operation
+type AdminBandwidthResetResult {
+  success: Boolean!
+  message: String
+  previousUsedBytes: Long
+  userId: Int
+  email: String
+}
+
+# Result of bandwidth quota update
+type AdminBandwidthUpdateResult {
+  success: Boolean!
+  message: String
+  userId: Int
+  email: String
+  newQuotaBytes: Long
+  unlimited: Boolean
+}
+
+# Result of force disconnect operation
+type AdminForceDisconnectResult {
+  success: Boolean!
+  message: String
+  userId: Int
+  email: String
+  disconnectedSessions: Int
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:dir="${#locale.language == 'ar' || #locale.language == 'fa' || #locale.language == 'he' ? 'rtl' : 'ltr'}"
+      th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Base styles */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        /* RTL/LTR text alignment */
+        [dir="rtl"] {
+            text-align: right;
+        }
+
+        [dir="ltr"] {
+            text-align: left;
+        }
+
+        /* RTL specific alignments */
+        [dir="rtl"] .rtl-aware {
+            margin-right: 0;
+            margin-left: 20px;
+            padding-right: 0;
+            padding-left: 20px;
+        }
+
+        [dir="ltr"] .rtl-aware {
+            margin-right: 20px;
+            margin-left: 0;
+            padding-right: 20px;
+            padding-left: 0;
+        }
+
+        /* RTL Lists */
+        [dir="rtl"] ul.rtl-list {
+            padding-right: 20px;
+            padding-left: 40px;
+        }
+
+        [dir="ltr"] ul.rtl-list {
+            padding-right: 40px;
+            padding-left: 20px;
+        }
+
+        /* RTL Buttons */
+        [dir="rtl"] .button-rtl {
+            float: right;
+        }
+
+        [dir="ltr"] .button-rtl {
+            float: left;
+        }
+
+        /* Common components */
+        .card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+
+        .details-section {
+            margin: 15px 0;
+        }
+
+        /* Label margins based on direction */
+        [dir="rtl"] .label {
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        [dir="ltr"] .label {
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        /* Additional RTL/LTR specific utilities */
+        [dir="rtl"] .float-start {
+            float: right;
+        }
+
+        [dir="ltr"] .float-start {
+            float: left;
+        }
+
+        [dir="rtl"] .float-end {
+            float: left;
+        }
+
+        [dir="ltr"] .float-end {
+            float: right;
+        }
+
+        [dir="rtl"] .text-start {
+            text-align: right;
+        }
+
+        [dir="ltr"] .text-start {
+            text-align: left;
+        }
+
+        [dir="rtl"] .text-end {
+            text-align: left;
+        }
+
+        [dir="ltr"] .text-end {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <!-- Content will go here -->
+</body>
+</html>

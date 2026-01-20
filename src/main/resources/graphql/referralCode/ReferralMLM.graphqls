@@ -1,0 +1,243 @@
+# MLM Referral System Types
+
+enum ReferralCommissionStatus {
+    PENDING
+    CREDITED
+    FAILED
+    CANCELLED
+}
+
+type ReferralLevelView {
+    id: ID
+    level: Int!
+    name: String
+    description: String
+    commissionPercent: BigDecimal!
+    minimumTokens: BigDecimal
+    maximumTokens: BigDecimal
+    active: Boolean!
+}
+
+type ReferralCommissionView {
+    id: ID!
+    sourceUserEmail: String!
+    level: Int!
+    paymentAmount: BigDecimal!
+    commissionPercent: BigDecimal!
+    tokenAmount: BigDecimal!
+    status: ReferralCommissionStatus!
+    createdAt: DateTime
+    creditedAt: DateTime
+}
+
+type LevelEarningsView {
+    level: Int!
+    levelName: String
+    commissionCount: Int!
+    tokensEarned: BigDecimal!
+    commissionPercent: BigDecimal
+}
+
+type ReferralEarningsView {
+    totalTokensEarned: BigDecimal!
+    pendingTokens: BigDecimal!
+    directReferrals: Int!
+    totalReferrals: Int!
+    levelEarnings: [LevelEarningsView!]!
+    referralCode: String
+    referralLink: String
+}
+
+# Network view types - shows people under each referral level
+type ReferredUserView {
+    userId: Int!
+    email: String!
+    username: String
+    joinedAt: DateTime
+    totalCommissionFromUser: BigDecimal!
+    hasActiveSubscription: Boolean!
+}
+
+type ReferralLevelNetwork {
+    level: Int!
+    levelName: String
+    userCount: Int!
+    totalEarningsFromLevel: BigDecimal!
+    users: [ReferredUserView!]!
+}
+
+type ReferralNetworkView {
+    totalNetworkSize: Int!
+    levels: [ReferralLevelNetwork!]!
+}
+
+# Extend Query type
+extend type Query {
+    # Get current user's referral earnings summary
+    getMyReferralEarnings: ReferralEarningsView!
+
+    # Get current user's commission history (paginated)
+    getMyReferralCommissions(page: Int, size: Int): [ReferralCommissionView!]!
+
+    # Get current user's referral network (people they referred)
+    getMyReferralNetwork(maxLevels: Int): ReferralNetworkView!
+
+    # Get all active referral level configurations
+    getReferralLevels: [ReferralLevelView!]!
+
+    # Admin: Get all referral levels including inactive
+    getAllReferralLevels: [ReferralLevelView!]!
+
+    # Admin: Get referral earnings for a specific user
+    getUserReferralEarnings(userId: Int!): ReferralEarningsView!
+
+    # Admin/Reseller: Get a user's referral network
+    getUserReferralNetwork(userId: Int!, maxLevels: Int): ReferralNetworkView!
+
+    # Admin/Reseller: Get a user's commission history
+    getUserReferralCommissions(userId: Int!, page: Int, size: Int): [ReferralCommissionView!]!
+}
+
+# Referral Configuration
+type ReferralConfigView {
+    enabled: Boolean!
+    requireActiveSubscription: Boolean!
+    coolingPeriodDays: Int!
+    minimumPaymentAmount: BigDecimal
+    minimumWithdrawalTokens: BigDecimal
+    dailyEarningCap: BigDecimal
+    monthlyEarningCap: BigDecimal
+    tokenRate: BigDecimal!
+    notificationsEnabled: Boolean!
+    referralBaseUrl: String
+    clickTrackingEnabled: Boolean!
+    maxLevels: Int!
+}
+
+# Leaderboard types
+type LeaderboardEntry {
+    rank: Int!
+    userId: Int!
+    username: String!
+    displayName: String!
+    totalTokensEarned: BigDecimal!
+    directReferrals: Int!
+    totalNetworkSize: Int!
+    totalConversions: Int!
+    conversionRate: BigDecimal!
+}
+
+type ReferralLeaderboardView {
+    period: String!
+    totalParticipants: Int!
+    currentUserRank: Int
+    currentUserEntry: LeaderboardEntry
+    topReferrers: [LeaderboardEntry!]!
+}
+
+# Click tracking types
+type ClickCountryStats {
+    countryCode: String
+    countryName: String
+    clicks: Int!
+    conversions: Int!
+    conversionRate: BigDecimal!
+}
+
+type ClickDailyStats {
+    date: String!
+    clicks: Int!
+    conversions: Int!
+}
+
+type ReferralClickStatsView {
+    totalClicks: Int!
+    totalConversions: Int!
+    conversionRate: BigDecimal!
+    clicksByCountry: [ClickCountryStats!]!
+    dailyStats: [ClickDailyStats!]!
+}
+
+# Paginated network view
+type ReferralLevelPageView {
+    level: Int!
+    levelName: String
+    commissionPercent: BigDecimal
+    totalUsersAtLevel: Int!
+    totalEarningsFromLevel: BigDecimal!
+    page: Int!
+    pageSize: Int!
+    totalPages: Int!
+    users: [ReferredUserView!]!
+}
+
+type ReferralNetworkPageView {
+    totalNetworkSize: Int!
+    totalEarnings: BigDecimal!
+    levelPage: ReferralLevelPageView
+}
+
+# Extend Query type with new queries
+extend type Query {
+    # Get referral system configuration
+    getReferralConfig: ReferralConfigView!
+
+    # Get referral leaderboard
+    getReferralLeaderboard(period: String, limit: Int): ReferralLeaderboardView!
+
+    # Get click statistics for current user's referral link
+    getMyReferralClickStats(days: Int): ReferralClickStatsView!
+
+    # Get paginated network view for a specific level
+    getMyReferralNetworkPage(level: Int!, page: Int, pageSize: Int): ReferralNetworkPageView!
+
+    # Admin: Get click stats for any user
+    getUserReferralClickStats(userId: Int!, days: Int): ReferralClickStatsView!
+}
+
+# Extend Mutation type
+extend type Mutation {
+    # Admin: Create or update a referral level
+    upsertReferralLevel(
+        level: Int!
+        commissionPercent: BigDecimal!
+        name: String
+        description: String
+        minimumTokens: BigDecimal
+        maximumTokens: BigDecimal
+        active: Boolean
+    ): ReferralLevelView!
+
+    # Admin: Delete a referral level
+    deleteReferralLevel(level: Int!): Boolean!
+
+    # Admin: Toggle referral level active status
+    toggleReferralLevel(level: Int!): ReferralLevelView!
+
+    # Admin: Initialize default referral levels (10%, 5%, 2% for 3 levels)
+    initializeDefaultReferralLevels: Boolean!
+
+    # Admin: Update referral system configuration
+    updateReferralConfig(
+        enabled: Boolean
+        requireActiveSubscription: Boolean
+        coolingPeriodDays: Int
+        minimumPaymentAmount: BigDecimal
+        minimumWithdrawalTokens: BigDecimal
+        dailyEarningCap: BigDecimal
+        monthlyEarningCap: BigDecimal
+        tokenRate: BigDecimal
+        notificationsEnabled: Boolean
+        referralBaseUrl: String
+        clickTrackingEnabled: Boolean
+        maxLevels: Int
+    ): ReferralConfigView!
+
+    # Track a referral link click (public endpoint)
+    trackReferralClick(
+        referralCode: String!
+        userAgent: String
+        refererUrl: String
+        country: String
+    ): Boolean!
+}

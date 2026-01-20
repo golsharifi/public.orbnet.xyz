@@ -1,0 +1,58 @@
+<th:block th:fragment="layout">
+    <style>
+        /* Grid System */
+        .grid {
+            display: grid !important;
+            grid-template-columns: repeat(12, 1fr) !important;
+            gap: 24px !important;
+        }
+
+        .col-6 {
+            grid-column: span 6 !important;
+        }
+
+        .col-12 {
+            grid-column: span 12 !important;
+        }
+
+        /* Flex Layout */
+        .flex {
+            display: flex !important;
+        }
+
+        .flex-column {
+            flex-direction: column !important;
+        }
+
+        .flex-row {
+            flex-direction: row !important;
+        }
+
+        .justify-between {
+            justify-content: space-between !important;
+        }
+
+        .items-center {
+            align-items: center !important;
+        }
+
+        /* Spacing */
+        .m-0 { margin: 0 !important; }
+        .m-4 { margin: 16px !important; }
+        .m-8 { margin: 32px !important; }
+
+        .mt-4 { margin-top: 16px !important; }
+        .mb-4 { margin-bottom: 16px !important; }
+        .ml-4 { margin-left: 16px !important; }
+        .mr-4 { margin-right: 16px !important; }
+
+        .p-0 { padding: 0 !important; }
+        .p-4 { padding: 16px !important; }
+        .p-8 { padding: 32px !important; }
+
+        .pt-4 { padding-top: 16px !important; }
+        .pb-4 { padding-bottom: 16px !important; }
+        .pl-4 { padding-left: 16px !important; }
+        .pr-4 { padding-right: 16px !important; }
+    </style>
+</th:block>

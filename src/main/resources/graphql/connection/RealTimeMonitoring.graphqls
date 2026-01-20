@@ -1,0 +1,18 @@
+type Subscription {
+  metricUpdates: RealTimeMetrics!
+}
+
+type RealTimeMetrics {
+  timestamp: DateTime!
+  activeConnections: Int!
+  serverMetrics: JSON!
+  networkMetrics: NetworkMetrics!
+}
+
+type NetworkMetrics {
+  totalBandwidth: Float!
+  averageLatency: Float!
+  totalActiveUsers: Int!
+  connectionsByRegion: JSON!
+  currentTokenRate: Float!
+}

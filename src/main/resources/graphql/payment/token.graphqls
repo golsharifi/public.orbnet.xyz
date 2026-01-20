@@ -1,0 +1,173 @@
+type TokenBalance {
+  id: ID!
+  userId: Int!
+  balance: BigDecimal!
+  lastActivityDate: LocalDateTime
+  createdAt: LocalDateTime!
+  updatedAt: LocalDateTime!
+}
+
+type TokenTransaction {
+  id: ID!
+  userId: ID!
+  amount: BigDecimal!
+  type: TokenTransactionType!
+  adVendor: String
+  region: String
+  createdAt: LocalDateTime!
+}
+
+type TokenRate {
+  id: ID!
+  region: String!
+  adVendor: String!
+  tokenPerAd: BigDecimal!
+  tokenPerMinute: BigDecimal!
+  dailyAdLimit: Int!
+  hourlyAdLimit: Int!
+  minDailyAds: Int!
+  minWeeklyAds: Int!
+  deviceLimit: Int!
+  multiDeviceRate: BigDecimal!
+}
+
+type DailyStats {
+  watchedAds: Int!
+  remainingAds: Int!
+  tokensEarned: BigDecimal!
+  tokensSpent: BigDecimal!
+}
+
+type RemainingLimits {
+  remainingDailyAds: Int!
+  remainingHourlyAds: Int!
+  nextHourlyReset: LocalDateTime!
+  nextDailyReset: LocalDateTime!
+}
+
+type GlobalTokenStats {
+  totalActiveUsers: Int!
+  totalDailyActiveUsers: Int!
+  totalTokensInCirculation: BigDecimal!
+  totalTokensEarnedToday: BigDecimal!
+  totalTokensSpentToday: BigDecimal!
+  totalAdsWatchedToday: Int!
+  averageTokensPerUser: BigDecimal!
+  averageTokensEarnedPerUser: BigDecimal!
+}
+
+type UserTokenStats {
+  userId: ID!
+  username: String!
+  email: String!
+  currentBalance: BigDecimal!
+  totalAdsWatched: Int!
+  adsWatchedToday: Int!
+  tokensEarnedToday: BigDecimal!
+  tokensSpentToday: BigDecimal!
+  lastActivity: LocalDateTime
+  isActive: Boolean!
+  subscriptionStart: LocalDateTime
+  subscriptionEnd: LocalDateTime
+}
+
+enum TokenTransactionType {
+  EARN
+  SPEND
+  STAKE
+  UNSTAKE
+}
+
+input TokenRateInput {
+  region: String!
+  adVendor: String!
+  tokenPerAd: BigDecimal
+  tokenPerMinute: BigDecimal
+  dailyAdLimit: Int
+  hourlyAdLimit: Int
+  minDailyAds: Int!
+  minWeeklyAds: Int!
+  deviceLimit: Int
+  multiDeviceRate: BigDecimal
+  minimumBalance: BigDecimal
+}
+
+type TokenStakingConfig {
+  id: ID!
+  name: String!
+  baseApy: BigDecimal!
+  bonusApyPerMonth: BigDecimal!
+  minimumLockDays: Int!
+  maximumLockDays: Int!
+  minimumStakeAmount: BigDecimal!
+  maximumStakeAmount: BigDecimal
+  isActive: Boolean!
+  requirements: [TokenStakingRequirement!]!
+}
+
+type TokenStakingRequirement {
+  id: ID!
+  requirementType: String!
+  requirementValue: String!
+}
+
+type TokenStake {
+  id: ID!
+  userId: ID!
+  amount: BigDecimal!
+  stakedAt: LocalDateTime!
+  unstakedAt: LocalDateTime
+  lockPeriodDays: Int!
+  rewardRate: BigDecimal!
+}
+
+type StakingStats {
+  totalStaked: BigDecimal!
+  totalRewardsEarned: BigDecimal!
+  activeStakes: Int!
+  averageApy: BigDecimal!
+}
+
+input TokenStakingConfigInput {
+  name: String!
+  baseApy: BigDecimal!
+  bonusApyPerMonth: BigDecimal!
+  minimumLockDays: Int!
+  maximumLockDays: Int!
+  minimumStakeAmount: BigDecimal!
+  maximumStakeAmount: BigDecimal
+  isActive: Boolean
+  requirements: [TokenStakingRequirementInput!]
+}
+
+input TokenStakingRequirementInput {
+  requirementType: String!
+  requirementValue: String!
+}
+
+input StakeTokensInput {
+  amount: BigDecimal!
+  lockPeriodDays: Int!
+}
+
+"Response when requesting an ad viewing session"
+type AdSessionResponse {
+  "Unique session identifier"
+  sessionId: String!
+  "Signature for verification"
+  signature: String!
+  "When this session expires"
+  expiresAt: LocalDateTime!
+  "Minimum seconds the ad must be watched"
+  minDurationSeconds: Int!
+}
+
+"Input for completing an ad session"
+input CompleteAdSessionInput {
+  "Session ID from requestAdSession"
+  sessionId: String!
+  "Signature from requestAdSession"
+  signature: String!
+  "How long the ad was watched in seconds"
+  durationSeconds: Int!
+}

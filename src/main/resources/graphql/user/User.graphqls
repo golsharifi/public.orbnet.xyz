@@ -1,0 +1,141 @@
+input UserCreate {
+  email: String!
+  password: String
+  resellerId: Int
+}
+
+# Result returned to admin/reseller after resetting a user's password
+type AdminPasswordResetResult {
+  userId: Int!
+  email: String!
+  username: String
+  newPassword: String!
+  emailNotificationSent: Boolean!
+  otherNotificationsSent: Boolean!
+  message: String!
+}
+
+type UserView {
+  id: Int!
+  uuid: String!
+  email: String!
+  username: String
+  "@deprecated Use managedBy instead"
+  resellerId: Int
+  "The user (reseller) who manages/created this user"
+  managedBy: UserView
+  "ID of the managing user for quick access"
+  managedById: Int
+  role: String!
+  enabled: Boolean
+  radAccess: String!
+  radAccessClear: String
+  profile: UserProfileView
+  createdAt: LocalDateTime
+  updatedAt: LocalDateTime
+  userDeviceList: [DeviceView]
+  userDevicesInfo: [UserDeviceInfo]
+  subscription: UserSubscriptionView
+  userSubscriptionList: [UserSubscriptionView]
+}
+
+input UserProfileEdit {
+  firstName: String
+  lastName: String
+  phone: String
+  address: String
+  city: String
+  country: String
+  postalCode: String
+  language: String
+  birthDate: LocalDate
+  telegramUsername: String
+  telegramChatId: String
+}
+
+type UserProfileView {
+  firstName: String
+  lastName: String
+  phone: String
+  address: String
+  city: String
+  country: String
+  postalCode: String
+  language: String
+  birthDate: LocalDate
+  telegramUsername: String
+  telegramChatId: String
+}
+
+type SignupResponse {
+  message: String!
+  success: Boolean!
+}
+
+type RoleView {
+  id: Int
+  name: String
+}
+
+input LoginCredentials {
+  email: String!
+  password: String!
+}
+
+type AuthenticatedUser {
+  accessToken: String!
+  refreshToken: String
+  user: UserView!
+}
+
+input ResellerUserCreate {
+  email: String!
+  password: String!
+  groupId: Int!
+  firstName: String
+  lastName: String
+  userName: String
+  country: String
+  phone: String
+  language: String
+  devices: Int
+  login: Int
+}
+
+type UserPage {
+  totalElements: Int
+  size: Int
+  number: Int
+  content: [UserView]
+}
+
+input ResellerUserEdit {
+  password: String
+  resellerId: Int
+  groupId: Int
+  multiLoginCount: Int
+  userProfileEdit: UserProfileEdit
+}
+
+type UserSubscriptionView {
+  group: GroupView
+  duration: Int
+  multiLoginCount: Int
+  expiresAt: String
+  createdAt: String
+  updatedAt: String
+  dailyBandwidth: String
+  downloadUpload: String
+}
+
+type UserDeviceInfo {
+  name: String
+  active: Boolean
+}
+
+type MigrationResult {
+  totalUsers: Int!
+  missingUuids: Int!
+  invalidUuids: Int!
+  fixedUuids: Int!
+}

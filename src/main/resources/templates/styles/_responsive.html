@@ -1,0 +1,73 @@
+<th:block th:fragment="responsive">
+    <style>
+        @media screen and (max-width: 600px) {
+            /* Container adjustments */
+            .email-container {
+                width: 100% !important;
+                padding: 24px 16px !important;
+            }
+
+            /* Typography adjustments */
+            .heading-1 {
+                font-size: 24px !important;
+            }
+
+            .heading-2 {
+                font-size: 20px !important;
+            }
+
+            .heading-3 {
+                font-size: 18px !important;
+            }
+
+            /* Grid adjustments */
+            .grid {
+                grid-template-columns: 1fr !important;
+                gap: 16px !important;
+            }
+
+            .col-6 {
+                grid-column: span 12 !important;
+            }
+
+            /* Component adjustments */
+            .card {
+                padding: 16px !important;
+                margin: 16px 0 !important;
+            }
+
+            .details-container {
+                padding: 16px !important;
+            }
+
+            .details-row {
+                flex-direction: column !important;
+            }
+
+            .details-label {
+                margin-bottom: 4px !important;
+            }
+
+            /* Button adjustments */
+            .button {
+                display: block !important;
+                text-align: center !important;
+            }
+
+            /* Support section adjustments */
+            .support-links {
+                flex-direction: column !important;
+            }
+
+            .support-link {
+                width: 100% !important;
+                text-align: center !important;
+            }
+
+            /* Installation guides adjustments */
+            .guides-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</th:block>

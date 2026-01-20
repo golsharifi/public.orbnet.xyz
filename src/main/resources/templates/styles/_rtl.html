@@ -1,0 +1,51 @@
+<th:block th:fragment="rtl">
+    <style>
+        /* RTL Support */
+        [dir="rtl"] {
+            /* Text alignment */
+            .text-left {
+                text-align: right !important;
+            }
+
+            .text-right {
+                text-align: left !important;
+            }
+
+            /* Margins */
+            .ml-4 {
+                margin-left: 0 !important;
+                margin-right: 16px !important;
+            }
+
+            .mr-4 {
+                margin-right: 0 !important;
+                margin-left: 16px !important;
+            }
+
+            /* Paddings */
+            .pl-4 {
+                padding-left: 0 !important;
+                padding-right: 16px !important;
+            }
+
+            .pr-4 {
+                padding-right: 0 !important;
+                padding-left: 16px !important;
+            }
+
+            /* Components */
+            .details-label {
+                text-align: right !important;
+            }
+
+            .notice {
+                text-align: right !important;
+            }
+
+            /* Header */
+            .header-container {
+                text-align: right !important;
+            }
+        }
+    </style>
+</th:block>

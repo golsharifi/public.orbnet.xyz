@@ -1,0 +1,10 @@
+type CountryStatsView {
+  country: String!
+  count: Int!
+}
+
+type UserStatsByCountryView {
+  continent: String!
+  count: Int!
+  countries: [CountryStatsView!]!
+}
